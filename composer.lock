@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "91aa7674a80c80e78fcb99fe592044df",
+    "content-hash": "f17e211c061928900a2a655484e6a851",
     "packages": [
         {
             "name": "composer/semver",
@@ -1361,6 +1361,70 @@
                 }
             ],
             "time": "2025-03-06T22:45:56+00:00"
+        },
+        {
+            "name": "fedale/gridview-bundle",
+            "version": "1.0.x-dev",
+            "dist": {
+                "type": "path",
+                "url": "../gridview-bundle",
+                "reference": "4078d473dd8f30ded0da6cc1affa4d19a2438639"
+            },
+            "require": {
+                "php": ">=8.1",
+                "symfony/framework-bundle": "^6.4 || ^7.0 || ^8.0"
+            },
+            "require-dev": {
+                "doctrine/orm": "^2.12 || ^3.0",
+                "phpunit/phpunit": "^9.6",
+                "symfony/form": "^6.4 || ^7.0 || ^8.0",
+                "symfony/property-access": "^6.4 || ^7.0 || ^8.0",
+                "symfony/serializer": "^6.4 || ^7.0 || ^8.0",
+                "symfony/translation": "^6.4 || ^7.0 || ^8.0",
+                "symfony/twig-bundle": "^6.4 || ^7.0 || ^8.0",
+                "twig/twig": "^3.0"
+            },
+            "suggest": {
+                "symfony/mercure-bundle": "Enables real-time grid updates (signal + auto-refresh) over Mercure"
+            },
+            "type": "symfony-bundle",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Fedale\\GridviewBundle\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Fedale\\GridviewBundle\\Tests\\": "tests/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Danilo Di Moia",
+                    "email": "zitter@gmail.com"
+                }
+            ],
+            "description": "Gridview in Yii2 style inside your Symfony projects",
+            "keywords": [
+                "bundle",
+                "crud",
+                "datagrid",
+                "grid",
+                "gridview",
+                "symfony"
+            ],
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
         },
         {
             "name": "monolog/monolog",
@@ -7679,6 +7743,62 @@
             "time": "2025-12-04T18:17:06+00:00"
         },
         {
+            "name": "symfonycasts/sass-bundle",
+            "version": "v0.10.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/SymfonyCasts/sass-bundle.git",
+                "reference": "eedf6ace11e5323344726d2b6e0ba1635cf12bb5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/SymfonyCasts/sass-bundle/zipball/eedf6ace11e5323344726d2b6e0ba1635cf12bb5",
+                "reference": "eedf6ace11e5323344726d2b6e0ba1635cf12bb5",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.1",
+                "symfony/asset-mapper": "^6.3|^7.0|^8.0",
+                "symfony/console": "^5.4|^6.3|^7.0|^8.0",
+                "symfony/filesystem": "^5.4|^6.3|^7.0|^8.0",
+                "symfony/finder": "^5.4|^6.3|^7.0|^8.0",
+                "symfony/http-client": "^5.4|^6.3|^7.0|^8.0",
+                "symfony/process": "^5.4|^6.3|^7.0|^8.0"
+            },
+            "require-dev": {
+                "matthiasnoback/symfony-config-test": "^5.0|^6.0",
+                "phpunit/phpunit": "^9.6",
+                "symfony/framework-bundle": "^6.3|^7.0|^8.0",
+                "symfony/phpunit-bridge": "^6.3.9|^7.0|^8.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Symfonycasts\\SassBundle\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mathéo Daninos",
+                    "homepage": "https://github.com/WebMamba"
+                }
+            ],
+            "description": "Delightful Sass Support for Symfony + AssetMapper",
+            "keywords": [
+                "asset-mapper",
+                "sass"
+            ],
+            "support": {
+                "issues": "https://github.com/SymfonyCasts/sass-bundle/issues",
+                "source": "https://github.com/SymfonyCasts/sass-bundle/tree/v0.10.0"
+            },
+            "time": "2026-04-09T11:29:28+00:00"
+        },
+        {
             "name": "twig/extra-bundle",
             "version": "v3.23.0",
             "source": {
@@ -10628,7 +10748,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "fedale/gridview-bundle": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
@@ -10636,6 +10758,6 @@
         "ext-ctype": "*",
         "ext-iconv": "*"
     },
-    "platform-dev": [],
-    "plugin-api-version": "2.6.0"
+    "platform-dev": {},
+    "plugin-api-version": "2.9.0"
 }

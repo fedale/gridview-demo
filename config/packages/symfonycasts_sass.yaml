@@ -1,0 +1,14 @@
+symfonycasts_sass:
+    root_sass:
+        # Skeleton placeholder entrypoint (kept for convention; currently unused).
+        - 'assets/styles/app.scss'
+        # Gridview bundle styles: grid.scss does `@use 'gridview'`, resolved via
+        # the load paths below.
+        - '%kernel.project_dir%/assets/styles/grid.scss'
+    sass_options:
+        load_path:
+            # Resolve `@use 'gridview'` / 'tokens' / 'dark' from the bundle.
+            - '%kernel.project_dir%/vendor/fedale/gridview-bundle/assets/styles'
+            # Resolve the deferred `@use 'flatpickr/dist/flatpickr'` stub
+            # (see docs/flatpickr-assetmapper-plan.md).
+            - '%kernel.project_dir%/assets/vendor-sass'

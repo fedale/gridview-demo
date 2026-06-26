@@ -1,0 +1,30 @@
+{#
+   Host layout for the gridview demo pages. Self-contained on purpose (the demo's
+   default base.html.twig expects an "app" importmap entrypoint that does not exist).
+   The "gridview-page" entrypoint boots Stimulus, registers the bundle controllers
+   and injects the Bootstrap + compiled gridview CSS.
+#}
+<!DOCTYPE html>
+<html lang="{{ app.request.locale|default('en') }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ ('grid.index_title')|trans({}, 'GridviewBundle') }}</title>
+    {{ importmap('gridview-page') }}
+    <style>
+        body { padding: 1.5rem 2rem; }
+        h1 { font-size: 1.4rem; margin-bottom: 1rem; }
+    </style>
+</head>
+<body data-turbo="false">
+    <h1>Gridview &mdash; Tag</h1>
+
+    {% include '@FedaleGridview/gridview/_grid.html.twig' with {
+        'gridview': gridview,
+        'columns': columns,
+        'models': models,
+        'pagination': pagination,
+        'form': form is defined ? form : null
+    } %}
+</body>
+</html>
