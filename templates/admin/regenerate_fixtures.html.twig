@@ -1,0 +1,15 @@
+{% extends '@EasyAdmin/layout.html.twig' %}
+
+{% block body_id 'regenerate-fixtures' %}
+
+{% block main %}
+    <h1 class="page-title">{{ 'fixtures.title'|trans }}</h1>
+
+    <p class="description">{{ 'fixtures.description'|trans }}</p>
+
+    <p class="description">{{ 'fixtures.description_extended'|trans|raw }}</p>
+
+    <form method="post" action="{{ path('admin_regenerate_fixtures') }}">
+        <button type="submit" class="btn btn-primary">{{ 'fixtures.submit'|trans }}</button>
+    </form>
+{% endblock %}
