@@ -1,0 +1,6 @@
+// App entrypoint for the gridview bundle styles. Named differently from the
+// bundle's own `gridview.scss` to avoid a Sass module self-reference loop.
+// `gridview` resolves via the Sass load_path (config/packages/sass.yaml) to
+// vendor/fedale/gridview-bundle/assets/styles/gridview.scss, which pulls its own
+// `tokens` / `dark` partials and the deferred flatpickr stub.
+@use 'gridview';

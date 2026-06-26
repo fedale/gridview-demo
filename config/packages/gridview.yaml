@@ -1,0 +1,20 @@
+fedale_gridview:
+    # Instant client-side i18n: ship the EN + IT catalogs to the browser. The demo
+    # already exposes a locale in the route ({_locale}), so the in-grid switcher
+    # stays off — the host drives the locale.
+    i18n:
+        locales: [en, it]
+        default: en
+        client_domain: Gridview
+        lang_switcher: false
+
+    defaults:
+        options:
+            emptyText: 'No records found'
+            useTurbo: true
+            showThead: true
+            showTfoot: true
+        attributes:
+            class: 'table table-striped'
+
+    gridviews: {}

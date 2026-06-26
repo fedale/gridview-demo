@@ -1,0 +1,4 @@
+// Stub for `@use 'flatpickr/dist/flatpickr'` in the gridview bundle's SCSS.
+// flatpickr (date-picker) is deferred — see docs/flatpickr-assetmapper-plan.md.
+// Empty on purpose: lets Sass compile now; date filters are simply unstyled
+// until the real flatpickr CSS is wired in.

@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# Copy the gridview bundle's Stimulus controllers + JS helpers into the app asset
+# root (assets/vendor-gridview/). They must live under assets/ — not be referenced
+# from the symlinked vendor path — so they can be imported *relatively* in
+# assets/bootstrap.js; only then does AssetMapper follow each controller's own
+# `../i18n.js` style imports and add them to the import map.
+#
+# Re-run after updating fedale/gridview-bundle. The date-filter controller is
+# skipped on purpose (it pulls flatpickr, which is deferred —
+# see docs/flatpickr-assetmapper-plan.md).
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+SRC="$ROOT/vendor/fedale/gridview-bundle/assets"
+DEST="$ROOT/assets/vendor-gridview"
+
+rm -rf "$DEST"
+mkdir -p "$DEST/controllers"
+
+cp -L "$SRC/i18n.js"          "$DEST/i18n.js"
+cp -L "$SRC/preferences.js"   "$DEST/preferences.js"
+cp -L "$SRC/prompt-modal.js"  "$DEST/prompt-modal.js"
+
+for f in "$SRC"/controllers/*_controller.js; do
+    name="$(basename "$f")"
+    [ "$name" = "gridview-date-filter_controller.js" ] && continue
+    cp -L "$f" "$DEST/controllers/$name"
+done
+
+echo "Synced gridview assets into $DEST ($(ls "$DEST/controllers" | wc -l) controllers)."

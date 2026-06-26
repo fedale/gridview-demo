@@ -24,3 +24,10 @@
 /public/assets/
 /assets/vendor/
 ###< symfony/asset-mapper ###
+
+###> symfonycasts/sass-bundle ###
+/public/assets/
+###< symfonycasts/sass-bundle ###
+
+# Gridview bundle assets, copied by bin/sync-gridview-assets (reproducible)
+/assets/vendor-gridview/

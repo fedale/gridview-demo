@@ -1,9 +1,15 @@
 framework:
     asset_mapper:
-        # The paths to make available to the asset mapper.
+        # The paths to make available to the asset mapper. The gridview bundle's
+        # Stimulus controllers + JS helpers are copied into assets/vendor-gridview/
+        # (see bin/sync-gridview-assets) so they live under the app asset root and
+        # can be imported *relatively* — which is what lets AssetMapper follow their
+        # internal imports and add them to the import map.
         paths:
             - assets/
         missing_import_mode: strict
+        excluded_patterns:
+            - '*/assets/styles/**/_*.scss'
 
 when@prod:
     framework:

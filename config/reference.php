@@ -1511,6 +1511,136 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         default_namespace?: scalar|Param|null, // Default namespace where stories will be created by maker. // Default: "Story"
  *     },
  * }
+ * @psalm-type FedaleGridviewConfig = array{
+ *     template?: scalar|Param|null, // Default: "fedale"
+ *     i18n?: array{ // Instant client-side translation of the grid chrome and column labels.
+ *         locales?: list<scalar|Param|null>,
+ *         default?: scalar|Param|null, // Default: "en"
+ *         client_domain?: scalar|Param|null, // Default: "Gridview"
+ *         external_event?: scalar|Param|null, // Default: "gridview:set-locale"
+ *         external_event_key?: scalar|Param|null, // Default: "locale"
+ *         observe_html_lang?: bool|Param, // Default: true
+ *         lang_switcher?: bool|Param, // Default: false
+ *         persist_external?: bool|Param, // Default: true
+ *         cookie_name?: scalar|Param|null, // Default: "gv_locale"
+ *     },
+ *     defaults?: array{
+ *         options?: array{
+ *             caption?: scalar|Param|null, // Default: null
+ *             emptyText?: scalar|Param|null, // Default: "No records found"
+ *             showThead?: bool|Param, // Default: true
+ *             showTfoot?: bool|Param, // Default: true
+ *             useTurbo?: bool|Param, // Default: true
+ *             globalSearch?: list<scalar|Param|null>,
+ *             addRoute?: scalar|Param|null, // Default: null
+ *             addLabel?: scalar|Param|null, // Default: "Add"
+ *             formName?: scalar|Param|null, // Default: "myform"
+ *             maxQueryLength?: int|Param, // Default: 4000
+ *             filterControls?: array{
+ *                 headerIcon?: bool|Param, // Default: true
+ *                 inlineClear?: bool|Param, // Default: false
+ *             },
+ *             pagination?: array{
+ *                 mode?: scalar|Param|null, // Default: "numeric"
+ *                 pageSelect?: bool|Param, // Default: true
+ *                 pageSelectThreshold?: int|Param, // Default: 10
+ *                 options?: mixed,
+ *             },
+ *             realtime?: array{ // Real-time grid updates over Mercure (signal + auto-refresh).
+ *                 enabled?: bool|Param, // Default: false
+ *                 topicPrefix?: scalar|Param|null, // Default: "gridview/"
+ *             },
+ *             layout?: array{
+ *                 gridview?: scalar|Param|null, // Default: null
+ *                 header?: scalar|Param|null, // Default: null
+ *                 toolbar?: scalar|Param|null, // Default: null
+ *                 table?: scalar|Param|null, // Default: null
+ *                 footer?: scalar|Param|null, // Default: null
+ *                 tfoot?: scalar|Param|null, // Default: null
+ *                 templates?: list<scalar|Param|null>,
+ *                 slots?: list<scalar|Param|null>,
+ *             },
+ *         },
+ *         attributes?: array{
+ *             class?: scalar|Param|null, // Default: null
+ *             row?: list<mixed>,
+ *             container?: list<mixed>,
+ *             header?: list<mixed>,
+ *             filter?: list<mixed>,
+ *         },
+ *         detailview?: array{
+ *             options?: list<mixed>,
+ *             attributes?: list<mixed>,
+ *         },
+ *     },
+ *     gridviews?: array<string, array{ // Default: []
+ *         options?: array{
+ *             caption?: scalar|Param|null,
+ *             emptyText?: scalar|Param|null,
+ *             showThead?: bool|Param,
+ *             showTfoot?: bool|Param,
+ *             useTurbo?: bool|Param,
+ *             globalSearch?: list<scalar|Param|null>,
+ *             addRoute?: scalar|Param|null,
+ *             addLabel?: scalar|Param|null,
+ *             maxQueryLength?: int|Param,
+ *             filterControls?: array{
+ *                 headerIcon?: bool|Param,
+ *                 inlineClear?: bool|Param,
+ *             },
+ *             pagination?: array{
+ *                 mode?: scalar|Param|null,
+ *                 pageSelect?: bool|Param,
+ *                 pageSelectThreshold?: int|Param,
+ *                 options?: mixed,
+ *             },
+ *             realtime?: array{
+ *                 enabled?: bool|Param,
+ *                 topicPrefix?: scalar|Param|null,
+ *             },
+ *             layout?: array{
+ *                 gridview?: scalar|Param|null,
+ *                 header?: scalar|Param|null,
+ *                 toolbar?: scalar|Param|null,
+ *                 table?: scalar|Param|null,
+ *                 footer?: scalar|Param|null,
+ *                 tfoot?: scalar|Param|null,
+ *                 templates?: list<scalar|Param|null>,
+ *                 slots?: list<scalar|Param|null>,
+ *             },
+ *         },
+ *         attributes?: array{
+ *             class?: scalar|Param|null, // Default: null
+ *             row?: list<mixed>,
+ *             container?: list<mixed>,
+ *             header?: list<mixed>,
+ *             filter?: list<mixed>,
+ *         },
+ *     }>,
+ *     detailviews?: array<string, array{ // Default: []
+ *         options?: list<mixed>,
+ *         attributes?: list<mixed>,
+ *     }>,
+ * }
+ * @psalm-type SymfonycastsSassConfig = array{
+ *     root_sass?: list<scalar|Param|null>,
+ *     binary?: scalar|Param|null, // The Sass binary to use // Default: null
+ *     search_for_binary?: scalar|Param|null, // Whether to search for the Sass binary in the system PATH // Default: true
+ *     sass_options?: array{
+ *         style?: "compressed"|"expanded"|Param, // The style of the generated CSS: compressed or expanded. // Default: "expanded"
+ *         charset?: bool|Param, // Whether to include the charset declaration in the generated Sass.
+ *         error_css?: bool|Param, // Emit a CSS file when an error occurs.
+ *         source_map?: bool|Param, // Whether to generate source maps. // Default: true
+ *         embed_sources?: bool|Param, // Embed source file contents in source maps.
+ *         embed_source_map?: bool|Param, // Embed source map contents in CSS. // Default: "%kernel.debug%"
+ *         load_path?: list<scalar|Param|null>,
+ *         quiet?: bool|Param, // Don't print warnings.
+ *         quiet_deps?: bool|Param, // Don't print compiler warnings from dependencies.
+ *         stop_on_error?: bool|Param, // Don't compile more files once an error is encountered.
+ *         trace?: bool|Param, // Print full Dart stack traces for exceptions.
+ *     },
+ *     embed_sourcemap?: bool|Param|null, // Deprecated: Option "embed_sourcemap" at "symfonycasts_sass.embed_sourcemap" is deprecated. Use "sass_options.embed_source_map" instead". // Default: null
+ * }
  * @psalm-type ConfigType = array{
  *     imports?: ImportsConfig,
  *     parameters?: ParametersConfig,
@@ -1525,6 +1655,8 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     security?: SecurityConfig,
  *     monolog?: MonologConfig,
  *     twig_component?: TwigComponentConfig,
+ *     fedale_gridview?: FedaleGridviewConfig,
+ *     symfonycasts_sass?: SymfonycastsSassConfig,
  *     "when@dev"?: array{
  *         imports?: ImportsConfig,
  *         parameters?: ParametersConfig,
@@ -1543,6 +1675,8 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         maker?: MakerConfig,
  *         twig_component?: TwigComponentConfig,
  *         zenstruck_foundry?: ZenstruckFoundryConfig,
+ *         fedale_gridview?: FedaleGridviewConfig,
+ *         symfonycasts_sass?: SymfonycastsSassConfig,
  *     },
  *     "when@prod"?: array{
  *         imports?: ImportsConfig,
@@ -1558,6 +1692,8 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         security?: SecurityConfig,
  *         monolog?: MonologConfig,
  *         twig_component?: TwigComponentConfig,
+ *         fedale_gridview?: FedaleGridviewConfig,
+ *         symfonycasts_sass?: SymfonycastsSassConfig,
  *     },
  *     "when@test"?: array{
  *         imports?: ImportsConfig,
@@ -1575,6 +1711,8 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         monolog?: MonologConfig,
  *         twig_component?: TwigComponentConfig,
  *         zenstruck_foundry?: ZenstruckFoundryConfig,
+ *         fedale_gridview?: FedaleGridviewConfig,
+ *         symfonycasts_sass?: SymfonycastsSassConfig,
  *     },
  *     ...<string, ExtensionType|array{ // extra keys must follow the when@%env% pattern or match an extension alias
  *         imports?: ImportsConfig,
