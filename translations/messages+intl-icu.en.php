@@ -116,6 +116,7 @@ return [
         'label_plural' => 'Tags',
         'name' => 'Name',
         'posts' => 'Posts',
+        'addTag' => 'Add tag',
     ],
 
     // Category fields

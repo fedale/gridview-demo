@@ -1,0 +1,210 @@
+/* App-side tweaks for the EasyAdmin-style shell that wraps the gridview pages.
+   Only what the reused EA theme files don't already cover. */
+
+/* Sidebar entries for entities whose gridview controller isn't built yet. */
+.menu-item.disabled .menu-item-contents {
+    opacity: .45;
+    pointer-events: none;
+    cursor: default;
+}
+
+/* The content-top search bar is the single search entry point, so hide the
+   grid's own global-search box (enabled per-grid to feed that search). */
+.gv-global-search {
+    display: none;
+}
+
+/* EA's search-input reset only targets name="query", but our input is named
+   "<form>[_q]", so the default search-input border leaks through. Reset it. */
+.content-top .content-search input[type="search"] {
+    background: var(--content-search-input-bg);
+    border: 0;
+    box-shadow: none;
+}
+.content-top .content-search input[type="search"]:focus,
+.content-top .content-search input[type="search"]:active {
+    box-shadow: none;
+    outline: none;
+}
+
+/* Dashboard landing page (no grid): just the welcome message. */
+.gv-dashboard-welcome {
+    max-inline-size: 640px;
+    padding: 8px 0;
+}
+.gv-dashboard-welcome h2 {
+    margin-block: 0 12px;
+    font-size: 22px;
+    font-weight: 600;
+}
+.gv-dashboard-welcome p {
+    margin: 0;
+    color: var(--text-muted-color, #6b7280);
+    line-height: 1.6;
+}
+
+/* Mobile-only hamburger inside the content-top. EA's separate .responsive-header
+   is gone, so this single button (hidden from 992px up, like EA's
+   #navigation-toggler) toggles the off-screen sidebar via sidebar-toggle.js. */
+.gv-sidebar-toggle {
+    background: transparent;
+    border: 0;
+    color: var(--content-top-color, inherit);
+    font-size: 18px;
+    line-height: 1;
+    padding: 6px 10px;
+    margin-inline-end: 4px;
+    cursor: pointer;
+}
+.gv-sidebar-toggle:hover {
+    color: var(--link-color, inherit);
+}
+@media (min-width: 992px) {
+    .gv-sidebar-toggle {
+        display: none;
+    }
+}
+
+/* Mobile header layout (below 992px): the content-top wraps into two rows like
+   EA's stacked .responsive-header + content-top:
+     row 1 = [hamburger] [brand title] [user] [gear]
+     row 2 = full-width search
+   `order` moves the search (which sits mid-DOM) to the end so it wraps below. */
+@media (max-width: 991.98px) {
+    .content-top {
+        flex-wrap: wrap;
+    }
+    .gv-sidebar-toggle           { order: 1; }
+    .gv-brand-title              { order: 2; }
+    .gv-user-icon                { order: 3; }
+    .content-top .dropdown-settings { order: 4; }
+    .content-top .content-search {
+        order: 5;
+        flex-basis: 100%;
+    }
+}
+
+/* Mobile-only brand title; on desktop the sidebar logo carries the brand. */
+.gv-brand-title {
+    flex: 1;
+    min-inline-size: 0;
+    overflow: hidden;
+    margin-inline: 4px;
+    color: var(--content-top-color, inherit);
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.2;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-decoration: none;
+}
+.gv-brand-title:hover {
+    color: var(--link-color, inherit);
+}
+
+/* Decorative user icon next to the theme gear; shown at every width (paired
+   with the gear) for visual parity with EA's user menu. */
+.gv-user-icon {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 6px;
+    color: var(--content-top-color, inherit);
+    font-size: 20px;
+    line-height: 1;
+}
+
+/* Only the brand title is mobile-only: on desktop the sidebar logo carries it. */
+@media (min-width: 992px) {
+    .gv-brand-title {
+        display: none;
+    }
+}
+
+/* Backdrop behind the slid-in sidebar (mobile only). Drawn as a body
+   pseudo-element so it adds no DOM node; the sidebar sits one z-index above it.
+   Clicks are handled in sidebar-toggle.js (outside-click closes the menu). */
+body.ea-mobile-sidebar-visible::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, .4);
+    z-index: var(--zindex-modal-backdrop);
+}
+@media (min-width: 992px) {
+    body.ea-mobile-sidebar-visible::after {
+        display: none;
+    }
+}
+
+/* Settings dropdown in the content-top. Uses the grid's gridview-dropdown
+   controller (toggles .gv-open), but the grid's .gv-dropdown-menu styles are
+   scoped to the grid widget, so the shell styles its own copy here. */
+.dropdown-settings {
+    position: relative;
+    /* EA's base.css hides .dropdown-settings below 992px (its gear also lives in
+       the responsive-header). Here it's the single gear, so keep it at all widths. */
+    display: block;
+}
+.dropdown-settings .btn {
+    background: transparent;
+    border: 0;
+    color: var(--content-top-color, inherit);
+    font-size: 18px;
+    line-height: 1;
+    padding: 6px 10px;
+    cursor: pointer;
+}
+.dropdown-settings .btn:hover {
+    color: var(--link-color, inherit);
+}
+.dropdown-settings .gv-dropdown-menu {
+    position: absolute;
+    inset-block-start: 100%;
+    inset-inline-end: 0;
+    z-index: 1050;
+    display: none;
+    min-inline-size: 170px;
+    margin-block-start: 4px;
+    padding: 6px;
+    list-style: none;
+    background: var(--dropdown-bg, var(--body-bg, #fff));
+    border: 1px solid var(--border-color, rgba(0, 0, 0, .15));
+    border-radius: 10px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, .14);
+}
+.dropdown-settings .gv-dropdown-menu.gv-open {
+    display: block;
+}
+.dropdown-settings .gv-dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    inline-size: 100%;
+    padding: 6px 10px;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--text-color, inherit);
+    font-size: 14px;
+    text-align: start;
+    text-decoration: none;
+    cursor: pointer;
+}
+.dropdown-settings .gv-dropdown-item:hover {
+    background: var(--gray-100, rgba(0, 0, 0, .05));
+}
+.dropdown-settings .gv-dropdown-item.is-active {
+    font-weight: 600;
+}
+.dropdown-settings .gv-dropdown-header {
+    padding: 6px 10px 2px;
+    color: var(--text-muted-color, #6b7280);
+    font-size: 11px;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+}
+.dropdown-settings hr {
+    margin: 6px 4px;
+    border: 0;
+    border-block-start: 1px solid var(--border-color, rgba(0, 0, 0, .1));
+}

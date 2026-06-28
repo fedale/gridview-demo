@@ -1513,6 +1513,11 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  * }
  * @psalm-type FedaleGridviewConfig = array{
  *     template?: scalar|Param|null, // Default: "fedale"
+ *     theme?: scalar|Param|null, // Default: "default"
+ *     themes?: array<string, array{ // Default: []
+ *         extends?: scalar|Param|null, // Default: null
+ *         classes?: list<scalar|Param|null>,
+ *     }>,
  *     i18n?: array{ // Instant client-side translation of the grid chrome and column labels.
  *         locales?: list<scalar|Param|null>,
  *         default?: scalar|Param|null, // Default: "en"
@@ -1576,6 +1581,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     gridviews?: array<string, array{ // Default: []
  *         options?: array{
  *             caption?: scalar|Param|null,
+ *             theme?: scalar|Param|null,
  *             emptyText?: scalar|Param|null,
  *             showThead?: bool|Param,
  *             showTfoot?: bool|Param,

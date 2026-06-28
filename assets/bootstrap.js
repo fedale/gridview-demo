@@ -9,6 +9,7 @@ const app = startStimulusApp();
 // out — it imports flatpickr, which is deferred (docs/flatpickr-assetmapper-plan.md).
 import GridviewColumnOrder from './vendor-gridview/controllers/gridview-column-order_controller.js';
 import GridviewCrud from './vendor-gridview/controllers/gridview-crud_controller.js';
+import GridviewDropdown from './vendor-gridview/controllers/gridview-dropdown_controller.js';
 import GridviewFilter from './vendor-gridview/controllers/gridview-filter_controller.js';
 import GridviewFormValidate from './vendor-gridview/controllers/gridview-form-validate_controller.js';
 import GridviewI18n from './vendor-gridview/controllers/gridview-i18n_controller.js';
@@ -25,6 +26,7 @@ import GridviewVisibility from './vendor-gridview/controllers/gridview-visibilit
 
 app.register('gridview-column-order', GridviewColumnOrder);
 app.register('gridview-crud', GridviewCrud);
+app.register('gridview-dropdown', GridviewDropdown);
 app.register('gridview-filter', GridviewFilter);
 app.register('gridview-form-validate', GridviewFormValidate);
 app.register('gridview-i18n', GridviewI18n);

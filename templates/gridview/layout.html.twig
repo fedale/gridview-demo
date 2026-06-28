@@ -1,0 +1,154 @@
+{#
+  Outer shell for the gridview pages, mirroring the EasyAdmin layout
+  (.wrapper > .sidebar-wrapper + .main-content). The EA "shell" theme CSS is
+  reused (see assets/gridview-page.js) and Font Awesome is loaded from a CDN for
+  the menu icons. EA's separate mobile-only .responsive-header node is dropped on
+  purpose: instead, a single hamburger button lives inside the always-present
+  .content-top and is shown only below 992px (see gridview-shell.css), toggling
+  the sidebar via assets/sidebar-toggle.js. The theme/settings gear already lives
+  in .content-top, so it works at every width too.
+
+  The sidebar replicates EasyAdmin's menu (sections, icons, badges) via the
+  gridview_menu() Twig function; entity links point to /gridview/<entity>
+  (no {_locale}) and auto-enable once their controller exists.
+#}
+{% set menu = gridview_menu() %}
+{% set active_label = 'Gridview' %}
+{% for item in menu|filter(i => i.type == 'link' and i.active) %}
+    {% set active_label = item.label %}
+{% endfor %}
+{% set form_name = gridview.options.formName|default('myform') %}
+{% set search_q = app.request.query.all(form_name)['_q']|default('') %}
+<!DOCTYPE html>
+<html lang="{{ app.request.locale|default('en') }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block page_title %}{{ active_label }}{% endblock %}</title>
+    {# Apply the saved theme early to avoid a flash of the wrong color scheme. #}
+    <script>(function(){var t=localStorage.getItem('gv-theme')||'light';var e=t==='auto'?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):t;document.documentElement.setAttribute('data-bs-theme',e);})();</script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+    {{ importmap('gridview-page') }}
+</head>
+<body class="ea" data-ea-default-color-scheme="light" data-turbo="false">
+    <div class="wrapper">
+        <div class="sidebar-wrapper">
+            <aside class="sidebar" id="gv-sidebar">
+                <header class="main-header">
+                    <nav class="navbar">
+                        <div id="header-logo">
+                            <a class="logo" href="{{ path('gridview_dashboard') }}">
+                                <span class="logo-custom">Gridview</span>
+                            </a>
+                        </div>
+                    </nav>
+                </header>
+
+                <nav id="main-menu">
+                    <ul class="menu">
+                        {% for item in menu %}
+                            {% if item.type == 'section' %}
+                                <li class="menu-header">
+                                    <span class="menu-header-contents">
+                                        <span class="menu-item-label">{{ item.label }}</span>
+                                    </span>
+                                </li>
+                            {% else %}
+                                <li class="menu-item{{ item.active ? ' active' : '' }}{{ item.enabled ? '' : ' disabled' }}">
+                                    {% set item_inner %}
+                                        {# Wrap the glyph in a span.menu-icon.icon to match EasyAdmin's
+                                           own markup: span.icon is the fixed-width (1.25em) centered box
+                                           that keeps the icon column aligned across the mixed FA styles. #}
+                                        <span class="menu-icon icon"><i class="{{ item.icon }}"></i></span>
+                                        <span class="menu-item-label">{{ item.label }}</span>
+                                        {% if item.badge %}
+                                            <span class="menu-item-badge rounded-pill badge {{ item.badge.class }}">{{ item.badge.text }}</span>
+                                        {% endif %}
+                                    {% endset %}
+                                    {% if item.enabled %}
+                                        <a href="{{ item.url }}" class="menu-item-contents"{{ item.target ? ' target=' ~ item.target ~ ' rel=noopener' : '' }}>{{ item_inner }}</a>
+                                    {% else %}
+                                        <span class="menu-item-contents" aria-disabled="true">{{ item_inner }}</span>
+                                    {% endif %}
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </nav>
+            </aside>
+        </div>
+
+        <section class="main-content">
+            <aside class="content-top ea-search-enabled">
+                {# Mobile-only hamburger: shown below 992px (see gridview-shell.css),
+                   toggles the off-screen sidebar via assets/sidebar-toggle.js. #}
+                <button class="gv-sidebar-toggle" type="button"
+                        data-gv-sidebar-toggle
+                        aria-controls="gv-sidebar" aria-expanded="false"
+                        aria-label="Toggle menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+                {# Mobile-only brand title (EA's responsive-header logo); hidden from 992px up,
+                   where the sidebar logo takes over. Replaces the search on narrow screens. #}
+                <a class="gv-brand-title" href="{{ path('gridview_dashboard') }}">Fedale Gridview Demo</a>
+                {# Pages without a grid (e.g. the dashboard) override this block to drop the search box. #}
+                {% block content_search %}
+                <div class="content-search">
+                    <form class="form-action-search" method="get" action="{{ app.request.pathInfo }}">
+                        <div class="form-group">
+                            <div class="form-widget">
+                                <i class="fas fa-magnifying-glass content-search-icon"></i>
+                                <label class="content-search-label" data-value="{{ search_q }}">
+                                    <input class="form-control{{ search_q == '' ? ' is-blank' : '' }}" type="search"
+                                           name="{{ form_name }}[_q]" value="{{ search_q }}"
+                                           placeholder="Search" spellcheck="false" autocorrect="off"
+                                           onInput="this.parentNode.dataset.value=this.value">
+                                </label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                {% endblock %}
+
+                {# Decorative user icon (no auth in this demo): mirrors EA's user menu for
+                   visual parity. Shown at every width, paired with the theme gear. #}
+                <span class="gv-user-icon" title="Not signed in" aria-hidden="true">
+                    <i class="fas fa-circle-user"></i>
+                </span>
+
+                {# Reuse the grid's own dropdown controller (no Bootstrap JS on this page). #}
+                <div class="dropdown-settings gv-dropdown" data-controller="gridview-dropdown">
+                    <button class="btn" type="button" data-action="gridview-dropdown#toggle" aria-expanded="false" title="Settings">
+                        <i class="fas fa-gear"></i>
+                    </button>
+                    <ul class="gv-dropdown-menu">
+                        <li class="gv-dropdown-header">Theme</li>
+                        <li><button type="button" class="gv-dropdown-item" data-gv-theme-value="light"><i class="fas fa-sun fa-fw"></i> Light</button></li>
+                        <li><button type="button" class="gv-dropdown-item" data-gv-theme-value="dark"><i class="fas fa-moon fa-fw"></i> Dark</button></li>
+                        <li><button type="button" class="gv-dropdown-item" data-gv-theme-value="auto"><i class="fas fa-circle-half-stroke fa-fw"></i> Auto</button></li>
+                        <li><hr></li>
+                        <li class="gv-dropdown-header">Language</li>
+                        {% for loc in ['en', 'es', 'fr'] %}
+                            <li><a class="gv-dropdown-item{{ app.request.locale == loc ? ' is-active' : '' }}" href="?_locale={{ loc }}">{{ loc|upper }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </aside>
+
+            <div class="content-wrapper">
+                <article class="content">
+                    <section class="content-header">
+                        <div class="content-header-title">
+                            <h1 class="title">{% block content_title %}{{ active_label }}{% endblock %}</h1>
+                        </div>
+                    </section>
+
+                    <section id="main" class="content-body">
+                        {% block grid %}{% endblock %}
+                    </section>
+                </article>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

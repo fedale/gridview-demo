@@ -31,3 +31,5 @@
 
 # Gridview bundle assets, copied by bin/sync-gridview-assets (reproducible)
 /assets/vendor-gridview/
+# EasyAdmin shell CSS, copied by bin/sync-gridview-assets (reproducible)
+/assets/vendor-easyadmin/

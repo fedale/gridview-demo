@@ -30,7 +30,7 @@ class TagController extends AbstractCrudGridController
         return [
             'id' => 'tag',
             'title' => 'tag.label',
-            'addLabel' => 'New tag',
+            'addLabel' => 'tag.addTag',
             'exportFilename' => 'tags',
             'indexTemplate' => 'gridview/index.html.twig',
             // Feed the shell's content-top search box (the in-grid global-search
@@ -49,6 +49,9 @@ class TagController extends AbstractCrudGridController
                 'name' => ['asc' => ['t.name'], 'desc' => ['t.name'], 'default' => 'asc'],
                 'postCount' => ['asc' => ['postCount'], 'desc' => ['postCount']],
             ],
+            'enableMultiSort' => true,
+            'defaultOrder' => ['name' => 'asc', 'id' => 'asc'],
+
         ];
     }
 

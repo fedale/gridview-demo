@@ -23,6 +23,13 @@ class TagRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('t')->select('t');
 
+        // Computed post counts surfaced as row attributes. Correlated subqueries
+        // keep one row per tag (Paginator-friendly) instead of a join+groupBy.
+        // `publishedCount` mirrors the admin's Post::isPublished() (status = published).
+        $qb
+            ->addSelect('(SELECT COUNT(p.id) FROM App\\Entity\\Post p JOIN p.tags pt WHERE pt = t) AS postCount')
+            ->addSelect("(SELECT COUNT(pp.id) FROM App\\Entity\\Post pp JOIN pp.tags ppt WHERE ppt = t AND pp.status = 'published') AS publishedCount");
+
         $this->searchForm->applyFilters($qb, $params, [
             'name' => ['text', 't.name'],
         ]);

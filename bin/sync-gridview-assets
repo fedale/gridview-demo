@@ -28,3 +28,19 @@ for f in "$SRC"/controllers/*_controller.js; do
 done
 
 echo "Synced gridview assets into $DEST ($(ls "$DEST/controllers" | wc -l) controllers)."
+
+# Copy the EasyAdmin "shell" theme CSS so the gridview pages can reuse the same
+# outer layout (.wrapper / .sidebar-wrapper / .main-content) as EasyAdmin. Only
+# the shell files are copied — the component files (buttons/forms/datagrids/...)
+# are left out on purpose so they don't clash with the grid's Bootstrap + .gv-*
+# styles. They are imported from assets/gridview-page.js.
+EA_SRC="$ROOT/vendor/easycorp/easyadmin-bundle/assets/css/easyadmin-theme"
+EA_DEST="$ROOT/assets/vendor-easyadmin"
+
+rm -rf "$EA_DEST"
+mkdir -p "$EA_DEST"
+for name in color-palette.css variables-theme.css base.css menu.css; do
+    cp -L "$EA_SRC/$name" "$EA_DEST/$name"
+done
+
+echo "Synced EasyAdmin shell CSS into $EA_DEST ($(ls "$EA_DEST" | wc -l) files)."
