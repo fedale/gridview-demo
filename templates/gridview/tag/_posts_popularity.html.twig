@@ -1,0 +1,25 @@
+{#
+   Posts "popularity bar" cell for the gridview Tag grid. Mirrors the EasyAdmin
+   admin/tag/_posts_popularity.html.twig: a progress bar sized on the total post
+   count, the count badge, and a muted "(N published)" hint shown only when not
+   all posts are published. Receives the already-computed counts (postCount /
+   publishedCount row attributes) rather than the entity, so no collection walk.
+#}
+{% set maxPosts = 20 %}
+{% set barWidth = min((count / maxPosts * 100)|round, 100) %}
+
+<div class="d-flex align-items-center gap-2">
+    <div class="progress" style="width: 120px; height: 6px;">
+        <div class="progress-bar bg-primary"
+             role="progressbar"
+             style="width: {{ barWidth }}%;"
+             aria-valuenow="{{ count }}"
+             aria-valuemin="0"
+             aria-valuemax="{{ maxPosts }}">
+        </div>
+    </div>
+    <span class="badge badge-secondary">{{ count }}</span>
+    {% if published != count %}
+        <small class="text-muted">({{ published }} {{ 'post.status.published'|trans|lower }})</small>
+    {% endif %}
+</div>
