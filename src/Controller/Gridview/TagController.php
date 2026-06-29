@@ -84,13 +84,12 @@ class TagController extends AbstractCrudGridController
                 'attribute' => 'postCount',
                 'label' => 'tag.posts',
                 'sortable' => true,
-                'value' => fn(array $data, int $index, DataColumn $column): Markup => new Markup(
-                    $column->renderTemplate('gridview/tag/_posts_popularity.html.twig', [
-                        'count' => (int) ($data['postCount'] ?? 0),
-                        'published' => (int) ($data['publishedCount'] ?? 0),
-                    ]),
-                    'UTF-8'
-                ),
+                'value'      => fn(array $data, int $index, DataColumn $column): string =>
+                $column->renderTemplate('gridview/tag/_posts_popularity.html.twig', [
+                    'count'     => (int) ($data['postCount'] ?? 0),
+                    'published' => (int) ($data['publishedCount'] ?? 0),
+                ]),
+                'twigFilter' => 'raw',
             ],
             ['type' => 'action', 'label' => 'Actions'],
         ];
