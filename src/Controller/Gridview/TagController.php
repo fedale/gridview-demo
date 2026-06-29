@@ -67,10 +67,12 @@ class TagController extends AbstractCrudGridController
                 'filter' => ['type' => 'text'],
                 'editable' => true,
                 // Render the name inside a primary badge.
-                'value' => static fn(array $data): Markup => new Markup(\sprintf(
+                'value' => fn(array $data, int $index, DataColumn $column): string => \sprintf(
                     '<span class="badge badge-primary" style="font-size: 0.95em;">%s</span>',
-                    htmlspecialchars((string) ($data['name'] ?? ''), ENT_QUOTES)
-                ), 'UTF-8'),
+                    htmlspecialchars((string) ($data['name'] ?? ''), ENT_QUOTES),
+                    'UTF-8'
+                ),
+                'twigFilter' => 'raw',
                 'control' => [
                     'type' => 'text',
                     'required' => true,
