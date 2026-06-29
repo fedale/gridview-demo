@@ -5,8 +5,8 @@ namespace App\Controller\Gridview;
 use App\Entity\Tag;
 use Fedale\GridviewBundle\Column\DataColumn;
 use Fedale\GridviewBundle\Controller\AbstractCrudGridController;
+use Fedale\GridviewBundle\Crud\CrudButton;
 use Symfony\Component\Routing\Attribute\Route;
-use Twig\Markup;
 
 /**
  * Gridview replica of {@see \App\Controller\Admin\TagCrudController} (EasyAdmin).
@@ -30,13 +30,57 @@ class TagController extends AbstractCrudGridController
         return [
             'id' => 'tag',
             'title' => 'tag.label',
-            'addLabel' => 'tag.addTag',
+            'addLabel' => 'tag.add',
             'exportFilename' => 'tags',
-            'indexTemplate' => 'gridview/index.html.twig',
-            // Feed the shell's content-top search box (the in-grid global-search
-            // widget is hidden via CSS so the top bar is the single search).
-            'options' => ['globalSearch' => ['name']],
+            // Tag-specific index that hosts the "Add Tag" button in the page
+            // content-header (non-modal link) instead of the in-grid toolbar.
+            'indexTemplate' => 'gridview/tag/index.html.twig',
+            // Action layout mirroring EasyAdmin's TagCrudController: the custom
+            // "View posts" action, then inline edit and the ROLE_ADMIN delete.
+            // The buttons themselves are wired in defaultActionButtons().
+            'actionLayout' => '{edit} {viewPosts} {delete}',
+            'options' => [
+                // Feeds the content-top search box; the in-grid global search is
+                // gone entirely now that the header region is dropped (below).
+                'globalSearch' => ['name'],
+                // Drop the whole gv-region--header (heading + toolbar): the Add
+                // button lives in the page content-header instead, and this grid
+                // has no other toolbar controls. {dataview} + {footer} remain.
+                'layout' => ['shell' => '{dataview} {footer}'],
+            ],
         ];
+    }
+
+    /**
+     * EA parity for the action column: keep the auto-wired edit/delete buttons but
+     * (a) restrict delete to ROLE_ADMIN — EA's
+     * `->setPermission(Action::DELETE, 'ROLE_ADMIN')` — and (b) add the custom
+     * "View posts" action that links to the post index pre-filtered by this tag,
+     * reusing the same EA filter query string (`filters[tags][value]` + comparison)
+     * so the post grid opens already filtered.
+     */
+    protected function defaultActionButtons(): array
+    {
+        $buttons = parent::defaultActionButtons();
+
+        if (isset($buttons['delete'])) {
+            $buttons['delete'] = ['content' => $buttons['delete'], 'roles' => ['ROLE_ADMIN']];
+        }
+
+        $theme = $this->actionButtonTheme();
+        $label = $this->actionLabel('action.view_posts', 'messages');
+        $buttons['viewPosts'] = fn(array $row): string => CrudButton::link(
+            $theme,
+            $this->generateUrl('admin_post_index', [
+                'filters' => ['tags' => ['value' => $row['id'], 'comparison' => '=']],
+            ]),
+            'viewPosts',
+            'newspaper',
+            $label,
+            'action.view_posts',
+        );
+
+        return $buttons;
     }
 
     protected function getDataProviderConfig(): array
@@ -86,13 +130,15 @@ class TagController extends AbstractCrudGridController
                 'attribute' => 'postCount',
                 'label' => 'tag.posts',
                 'sortable' => true,
-                'value'      => fn(array $data, int $index, DataColumn $column): string =>
-                $column->renderTemplate('gridview/tag/_posts_popularity.html.twig', [
-                    'count'     => (int) ($data['postCount'] ?? 0),
-                    'published' => (int) ($data['publishedCount'] ?? 0),
-                ]),
+                'value' => fn(array $data, int $index, DataColumn $column): string =>
+                    $column->renderTemplate('gridview/tag/_posts_popularity.html.twig', [
+                        'count' => (int) ($data['postCount'] ?? 0),
+                        'published' => (int) ($data['publishedCount'] ?? 0),
+                    ]),
                 'twigFilter' => 'raw',
             ],
+            // Auto-wired to the CRUD routes; the buttons/layout come from
+            // configure() + defaultActionButtons() above (EA parity).
             ['type' => 'action', 'label' => 'Actions'],
         ];
     }

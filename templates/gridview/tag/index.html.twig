@@ -1,0 +1,31 @@
+{#
+   Tag list page. Variant of the shared gridview/index.html.twig that moves the
+   "Add Tag" button out of the grid's in-grid header/toolbar and into the page
+   content-header (to the right of the title).
+
+   Why not the in-grid toolbar: the Tag grid drops the whole gv-region--header
+   (see TagController layout override), so there is no in-grid toolbar to host the
+   button. The button must live outside the grid, in the page chrome.
+
+   Why non-modal: the content-header sits outside the grid's turbo-frame and
+   outside the [data-gridview] element that carries the `gridview-crud` Stimulus
+   controller. A modal-open `data-action` would never reach the controller from
+   here, so this is a plain link to the /new route. Direct navigation is not XHR,
+   so the controller renders the full-page CRUD form (crud/page.html.twig).
+#}
+{% extends 'gridview/index.html.twig' %}
+
+{% block content_header_actions %}
+    {% set _crud = gridview.options.crud|default({}) %}
+    {% if _crud.addUrl is defined and _crud.addUrl is not empty %}
+        {% set _addLabel = gridview.options.addLabel|default('Add') %}
+        {# Mirror the bundle addButton label resolution: app-owned key via the
+           client domain, otherwise the translatable system fallback. #}
+        {% set _addText = gv_client_label(_addLabel) ? gv_client_text(_addLabel) : _addLabel|trans({}, 'GridviewBundle') %}
+        <div class="content-header-actions">
+            <a href="{{ _crud.addUrl }}" class="{{ gridview.cls('btn.primary') }}" {{ gv_i18n(_addLabel) }}>
+                <span class="{{ gridview.cls('btn.icon') }}" aria-hidden="true">+</span>{{ _addText }}
+            </a>
+        </div>
+    {% endif %}
+{% endblock %}

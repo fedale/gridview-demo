@@ -148,6 +148,11 @@
                         <div class="content-header-title">
                             <h1 class="title">{% block content_title %}{{ active_label }}{% endblock %}</h1>
                         </div>
+                        {# Page-level actions, rendered to the right of the title (the
+                           .content-header flex container space-between handles placement).
+                           Used e.g. by the Tag grid to host its "Add" button outside the
+                           grid's turbo-frame instead of the in-grid toolbar. #}
+                        {% block content_header_actions %}{% endblock %}
                     </section>
 
                     <section id="main" class="content-body">

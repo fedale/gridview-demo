@@ -8,7 +8,11 @@
         {% endblock %}
 
         {% block javascripts %}
-            {% block importmap %}{{ importmap('app') }}{% endblock %}
+            {# Used as the fallback wrapper for the full-page CRUD form (non-modal
+               add/edit). Load the gridview entrypoint so the form's Stimulus
+               controllers (validation, i18n) and styles are present; the skeleton
+               'app' entrypoint is not registered in importmap.php. #}
+            {% block importmap %}{{ importmap('gridview-page') }}{% endblock %}
         {% endblock %}
     </head>
     <body>

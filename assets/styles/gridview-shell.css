@@ -208,3 +208,44 @@ body.ea-mobile-sidebar-visible::after {
     border: 0;
     border-block-start: 1px solid var(--border-color, rgba(0, 0, 0, .1));
 }
+
+/* EA-style secondary buttons inside the grid (toolbar + action column).
+   Stock Bootstrap `.btn-secondary` is solid gray (#6c757d); EasyAdmin remaps it
+   to its own light/dark button. Rather than hardcoding colours, we drive the
+   button off EA's own `--button-secondary-*` variables (defined in the loaded
+   EA `variables-theme.css`); they already switch between the light and dark
+   palettes via the body's `.ea-light-scheme` / `.ea-dark-scheme` class, so the
+   gridview buttons follow the theme switcher exactly like the EA datagrid.
+   The `background` (not `background-color`) honours EA's gradient bg; the action
+   icons use fill="currentColor", inheriting `--button-secondary-color`. */
+[data-gridview] .btn-secondary {
+    --bs-btn-color: var(--button-secondary-color);
+    --bs-btn-bg: var(--button-secondary-bg);
+    --bs-btn-border-color: var(--button-secondary-border-color);
+    --bs-btn-hover-color: var(--button-secondary-hover-color);
+    --bs-btn-hover-bg: var(--button-secondary-hover-bg);
+    --bs-btn-hover-border-color: var(--button-secondary-hover-border-color);
+    --bs-btn-active-color: var(--button-secondary-active-color);
+    --bs-btn-active-bg: var(--button-secondary-active-bg);
+    --bs-btn-active-border-color: var(--button-secondary-active-border-color);
+    background: var(--button-secondary-bg);
+    color: var(--button-secondary-color);
+    border-color: var(--button-secondary-border-color);
+    box-shadow: var(--button-secondary-box-shadow);
+}
+[data-gridview] .btn-secondary:hover {
+    background: var(--button-secondary-hover-bg);
+    color: var(--button-secondary-hover-color);
+    border-color: var(--button-secondary-hover-border-color);
+}
+[data-gridview] .btn-secondary:active,
+[data-gridview] .btn-secondary.active {
+    background: var(--button-secondary-active-bg);
+    color: var(--button-secondary-active-color);
+    border-color: var(--button-secondary-active-border-color);
+    box-shadow: var(--button-secondary-active-box-shadow);
+}
+/* EA tints action-button glyphs slightly muted vs. the label. */
+[data-gridview] .btn-secondary .gv-action-icon {
+    color: var(--button-secondary-icon-color);
+}
