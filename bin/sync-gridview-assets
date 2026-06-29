@@ -39,7 +39,7 @@ EA_DEST="$ROOT/assets/vendor-easyadmin"
 
 rm -rf "$EA_DEST"
 mkdir -p "$EA_DEST"
-for name in color-palette.css variables-theme.css base.css menu.css; do
+for name in color-palette.css variables-theme.css base.css menu.css badges.css; do
     cp -L "$EA_SRC/$name" "$EA_DEST/$name"
 done
 
