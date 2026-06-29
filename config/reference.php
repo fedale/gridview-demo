@@ -1532,6 +1532,8 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     defaults?: array{
  *         options?: array{
  *             caption?: scalar|Param|null, // Default: null
+ *             title?: scalar|Param|null, // Default: null
+ *             renderer?: scalar|Param|null, // Default: "table"
  *             emptyText?: scalar|Param|null, // Default: "No records found"
  *             showThead?: bool|Param, // Default: true
  *             showTfoot?: bool|Param, // Default: true
@@ -1556,14 +1558,15 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *                 topicPrefix?: scalar|Param|null, // Default: "gridview/"
  *             },
  *             layout?: array{
- *                 gridview?: scalar|Param|null, // Default: null
+ *                 shell?: scalar|Param|null, // Default: null
  *                 header?: scalar|Param|null, // Default: null
  *                 toolbar?: scalar|Param|null, // Default: null
- *                 table?: scalar|Param|null, // Default: null
+ *                 dataview?: scalar|Param|null, // Default: null
  *                 footer?: scalar|Param|null, // Default: null
  *                 tfoot?: scalar|Param|null, // Default: null
  *                 templates?: list<scalar|Param|null>,
  *                 slots?: list<scalar|Param|null>,
+ *                 attrs?: list<list<mixed>>,
  *             },
  *         },
  *         attributes?: array{
@@ -1581,6 +1584,8 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     gridviews?: array<string, array{ // Default: []
  *         options?: array{
  *             caption?: scalar|Param|null,
+ *             title?: scalar|Param|null,
+ *             renderer?: scalar|Param|null,
  *             theme?: scalar|Param|null,
  *             emptyText?: scalar|Param|null,
  *             showThead?: bool|Param,
@@ -1605,14 +1610,15 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *                 topicPrefix?: scalar|Param|null,
  *             },
  *             layout?: array{
- *                 gridview?: scalar|Param|null,
+ *                 shell?: scalar|Param|null,
  *                 header?: scalar|Param|null,
  *                 toolbar?: scalar|Param|null,
- *                 table?: scalar|Param|null,
+ *                 dataview?: scalar|Param|null,
  *                 footer?: scalar|Param|null,
  *                 tfoot?: scalar|Param|null,
  *                 templates?: list<scalar|Param|null>,
  *                 slots?: list<scalar|Param|null>,
+ *                 attrs?: list<list<mixed>>,
  *             },
  *         },
  *         attributes?: array{
