@@ -25,12 +25,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block page_title %}{{ active_label }}{% endblock %}</title>
-    {# Apply the saved theme early to avoid a flash of the wrong color scheme. #}
-    <script>(function(){var t=localStorage.getItem('gv-theme')||'light';var e=t==='auto'?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):t;document.documentElement.setAttribute('data-bs-theme',e);})();</script>
+    {# Apply the saved theme early to avoid a flash of the wrong color scheme.
+       data-bs-theme on <html> covers Bootstrap; the EA dark palette (which drives
+       --body-bg) keys off the .ea-dark-scheme class on <body>, applied by a second
+       inline snippet right after <body> opens (theme-switcher.js only runs once the
+       deferred entrypoint bundle has loaded, which is too late to prevent a flash). #}
+    <script>(function(){var t=localStorage.getItem('gv-theme')||'light';var e=t==='auto'?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):t;document.documentElement.setAttribute('data-bs-theme',e);window.__gvTheme=e;})();</script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
     {{ importmap('gridview-page') }}
 </head>
 <body class="ea" data-ea-default-color-scheme="light" data-turbo="false">
+    {# Apply the EA scheme class/attribute on <body> before content paints, so the
+       dark --body-bg is in effect from the first frame (see the <head> snippet). #}
+    <script>(function(){var e=window.__gvTheme||'light';document.body.setAttribute('data-bs-theme',e);document.body.classList.add(e==='dark'?'ea-dark-scheme':'ea-light-scheme');})();</script>
     <div class="wrapper">
         <div class="sidebar-wrapper">
             <aside class="sidebar" id="gv-sidebar">
