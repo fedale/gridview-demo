@@ -1544,7 +1544,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *             formName?: scalar|Param|null, // Default: "fedaleForm"
  *             maxQueryLength?: int|Param, // Default: 4000
  *             filterControls?: array{
- *                 headerIcon?: bool|Param, // Default: true
+ *                 inHeader?: bool|Param, // Default: true
  *                 inlineClear?: bool|Param, // Default: false
  *             },
  *             pagination?: array{
@@ -1596,7 +1596,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *             addLabel?: scalar|Param|null,
  *             maxQueryLength?: int|Param,
  *             filterControls?: array{
- *                 headerIcon?: bool|Param,
+ *                 inHeader?: bool|Param,
  *                 inlineClear?: bool|Param,
  *             },
  *             pagination?: array{

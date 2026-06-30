@@ -24,15 +24,41 @@
     display: none;
 }
 
-/* Pages without a grid (form pages, dashboard) drop the .content-search box, so
-   the flex:1 filler that normally pins the right cluster (user icon + settings
-   gear) to the right edge is gone, and content-top's justify-content:space-between
-   splits the two icons to opposite edges. Re-pin them right by letting the first
-   one absorb the free space; when the search IS present its flex:1 leaves no free
-   space, so this margin is a no-op. Desktop only — mobile uses explicit `order`. */
+/* The content-top is split into two stacked rows: an upper bar (brand title +
+   actions, on the responsive background) and a lower search row. Override EA's
+   single flex row / fixed height so the two child divs stack and size themselves. */
+.content-top {
+    flex-direction: column;
+    align-items: stretch;
+    block-size: auto;
+    padding: 0;
+}
+
+/* Upper bar: hamburger + centered brand title + user icon + settings gear, on
+   the responsive-header background at every width. */
+.gv-content-top-bar {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 15px;
+    background: var(--gv-responsive-bg, var(--responsive-header-bg));
+}
+/* Push the right cluster (user icon + gear) to the trailing edge; the hamburger
+   stays at the leading edge and the absolutely-centered title floats between. */
+.gv-content-top-bar > .gv-user-icon {
+    margin-inline-start: auto;
+}
+
+/* Lower row: the search box, full width. */
+.gv-content-top-search {
+    display: flex;
+    padding: 5px 15px;
+}
 @media (min-width: 992px) {
-    .content-top > .gv-user-icon {
-        margin-inline-start: auto;
+    .gv-content-top-bar,
+    .gv-content-top-search {
+        padding-inline: var(--lg-content-padding-left);
     }
 }
 
@@ -87,36 +113,21 @@
     }
 }
 
-/* Mobile header layout (below 992px): the content-top wraps into two rows like
-   EA's stacked .responsive-header + content-top:
-     row 1 = [hamburger] [brand title] [user] [gear]
-     row 2 = full-width search
-   `order` moves the search (which sits mid-DOM) to the end so it wraps below. */
-@media (max-width: 991.98px) {
-    .content-top {
-        flex-wrap: wrap;
-    }
-    .gv-sidebar-toggle           { order: 1; }
-    .gv-brand-title              { order: 2; }
-    .gv-user-icon                { order: 3; }
-    .content-top .dropdown-settings { order: 4; }
-    .content-top .content-search {
-        order: 5;
-        flex-basis: 100%;
-    }
-}
-
-/* Mobile-only brand title; on desktop the sidebar logo carries the brand. */
+/* Brand title, centered within the upper bar at every width. Absolutely
+   positioned so it stays centered on the bar regardless of the (asymmetric)
+   hamburger / user+gear clusters that flank it in normal flow. */
 .gv-brand-title {
-    flex: 1;
-    min-inline-size: 0;
+    position: absolute;
+    inset-inline-start: 50%;
+    transform: translateX(-50%);
+    max-inline-size: 50%;
     overflow: hidden;
-    margin-inline: 4px;
     color: var(--content-top-color, inherit);
     font-size: 16px;
     font-weight: 500;
     line-height: 1.2;
     white-space: nowrap;
+    text-align: center;
     text-overflow: ellipsis;
     text-decoration: none;
 }
@@ -133,13 +144,6 @@
     color: var(--content-top-color, inherit);
     font-size: 20px;
     line-height: 1;
-}
-
-/* Only the brand title is mobile-only: on desktop the sidebar logo carries it. */
-@media (min-width: 992px) {
-    .gv-brand-title {
-        display: none;
-    }
 }
 
 /* Backdrop behind the slid-in sidebar (mobile only). Drawn as a body

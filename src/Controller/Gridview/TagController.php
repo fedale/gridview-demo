@@ -5,7 +5,6 @@ namespace App\Controller\Gridview;
 use App\Entity\Tag;
 use Fedale\GridviewBundle\Column\DataColumn;
 use Fedale\GridviewBundle\Controller\AbstractCrudGridController;
-use Fedale\GridviewBundle\Crud\CrudButton;
 use Symfony\Component\Routing\Attribute\Route;
 
 /**
@@ -22,6 +21,12 @@ class TagController extends AbstractCrudGridController
 {
     /** Newspaper glyph for the "View posts" action (feather style, matches CrudButton icons). */
     private const ICON_VIEW_POSTS = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8M15 18h-5M10 6h8v4h-8z"/></svg>';
+
+    /** FontAwesome pencil — matches the EasyAdmin edit-action markup. */
+    private const ICON_EDIT = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor"><path d="M362.7 19.3L314.3 67.7 444.3 197.7l48.4-48.4c25-25 25-65.5 0-90.5L453.3 19.3c-25-25-65.5-25-90.5 0zm-71 71L58.6 323.5c-10.4 10.4-18 23.3-22.2 37.4L1 481.2C-1.5 489.7 .8 498.8 7 505s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L421.7 220.3 291.7 90.3z"/></svg>';
+
+    /** FontAwesome eye for the (not-yet-wired) show action. */
+    private const ICON_SHOW = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" fill="currentColor"><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4 142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1 3.3-7.9 3.3-16.7 0-24.6-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM144 256a144 144 0 1 1 288 0 144 144 0 1 1 -288 0zm144-64c0 35.3-28.7 64-64 64-7.1 0-13.9-1.2-20.3-3.3-5.5-1.8-11.9 1.6-11.7 7.4.3 6.9 1.3 13.8 3.2 20.7 13.7 51.2 66.4 81.6 117.6 67.9s81.6-66.4 67.9-117.6c-11.1-41.5-47.8-69.4-88.6-71.1-5.8-.2-9.2 6.1-7.4 11.7 2.1 6.4 3.3 13.2 3.3 20.3z"/></svg>';
 
     protected function getDataClass(): string
     {
@@ -81,7 +86,7 @@ class TagController extends AbstractCrudGridController
                 // Action layout mirroring EasyAdmin's TagCrudController: the custom
                 // "View posts" action, then inline edit and the ROLE_ADMIN delete.
                 // The buttons themselves are wired in defaultActionButtons().
-                'actionLayout' => '{edit} {viewPosts} {delete}',
+                'actionLayout' => '{edit} {show} {viewPosts}',
                 // Feeds the content-top search box; the in-grid global search is
                 // gone entirely now that the header region is dropped (below).
                 'globalSearch' => ['name'],
@@ -89,39 +94,78 @@ class TagController extends AbstractCrudGridController
                 // button lives in the page content-header instead, and this grid
                 // has no other toolbar controls. {dataview} + {footer} remain.
                 'layout' => ['shell' => '{dataview} {footer}'],
+                'filterControls' => ['inHeader' => false],
             ],
         ];
     }
 
     /**
-     * EA parity for the action column: keep the auto-wired edit/delete buttons but
-     * (a) restrict delete to ROLE_ADMIN — EA's
-     * `->setPermission(Action::DELETE, 'ROLE_ADMIN')` — and (b) add the custom
-     * "View posts" action that links to the post index pre-filtered by this tag,
-     * reusing the same EA filter query string (`filters[tags][value]` + comparison)
-     * so the post grid opens already filtered.
+     * EasyAdmin-style action triggers (Bootstrap button shell + icon + i18n label),
+     * keyed by the tokens used in `options.actionLayout` ({edit} {show} {viewPosts}):
+     * inline edit, the not-yet-wired show, and the custom "View posts" jump to the
+     * post index pre-filtered by this tag (reusing EA's filter query string so the
+     * post grid opens already filtered). Built explicitly instead of via
+     * parent::defaultActionButtons() so each button carries the EA markup.
      */
     protected function defaultActionButtons(): array
     {
-        $buttons = parent::defaultActionButtons();
+        $buttons = [];
 
-        if (isset($buttons['delete'])) {
-            $buttons['delete'] = ['content' => $buttons['delete'], 'roles' => ['ROLE_ADMIN']];
-        }
+        $buttons['edit'] = fn(array $row): string => $this->eaAction(
+            'edit',
+            $this->generateUrl($this->routeName('update'), ['id' => $row['id']]),
+            self::ICON_EDIT,
+            'action.edit',
+            'Edit',
+        );
 
-        // Custom "View posts" action: jumps to the post index pre-filtered by this
-        // tag, reusing EA's filter query string so the post grid opens already
-        // filtered. The title is a `messages`-domain key (the grid's client_domain)
-        // swapped client-side by the i18n runtime.
-        $buttons['viewPosts'] = fn(array $row): string => CrudButton::link(
+        // 'show' route not wired yet — href '#' keeps the button visible so the
+        // column layout is final. Swap to
+        // $this->generateUrl($this->routeName('show'), ['id' => $row['id']])
+        // once the show route exists.
+        $buttons['show'] = fn(array $row): string => $this->eaAction(
+            'show',
+            '#',
+            self::ICON_SHOW,
+            'action.show',
+            'Show',
+        );
+
+        $buttons['viewPosts'] = fn(array $row): string => $this->eaAction(
+            'viewPosts',
             $this->generateUrl('admin_post_index', [
                 'filters' => ['tags' => ['value' => $row['id'], 'comparison' => '=']],
             ]),
             self::ICON_VIEW_POSTS,
             'action.view_posts',
+            'View posts',
         );
 
         return $buttons;
+    }
+
+    /**
+     * EasyAdmin-style action trigger: a Bootstrap button shell
+     * (.btn .btn-secondary .action-<name>) wrapping an icon span and an
+     * i18n-ready label span. $labelKey is a `messages`-domain key (the grid's
+     * client_domain) swapped client-side by the i18n runtime; $labelFallback is
+     * the literal no-JS text. $icon is raw inline SVG.
+     */
+    private function eaAction(string $name, string $url, string $icon, string $labelKey, string $labelFallback): string
+    {
+        $esc = static fn(string $v): string => htmlspecialchars($v, \ENT_QUOTES, 'UTF-8');
+
+        return \sprintf(
+            '<a class="btn btn-secondary action-%1$s" href="%2$s" role="button" data-action-name="%1$s">'
+            . '<span class="icon btn-icon">%3$s</span>'
+            . '<span class="btn-label"><span class="action-label" data-gv-i18n="%4$s">%5$s</span></span>'
+            . '</a>',
+            $esc($name),
+            $esc($url),
+            $icon,
+            $esc($labelKey),
+            $esc($labelFallback),
+        );
     }
 
     protected function dataConfig(): array
@@ -180,10 +224,10 @@ class TagController extends AbstractCrudGridController
                 'label' => 'tag.posts',
                 'sortable' => true,
                 'value' => fn(array $data, int $index, DataColumn $column): string =>
-                $column->renderTemplate('gridview/tag/_posts_popularity.html.twig', [
-                    'count' => (int) ($data['postCount'] ?? 0),
-                    'published' => (int) ($data['publishedCount'] ?? 0),
-                ]),
+                    $column->renderTemplate('gridview/tag/_posts_popularity.html.twig', [
+                        'count' => (int) ($data['postCount'] ?? 0),
+                        'published' => (int) ($data['publishedCount'] ?? 0),
+                    ]),
                 'twigFilter' => 'raw',
             ],
             // Auto-wired to the CRUD routes; the buttons/layout come from

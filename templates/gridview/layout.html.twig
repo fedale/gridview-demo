@@ -87,59 +87,71 @@
 
         <section class="main-content">
             <aside class="content-top ea-search-enabled">
-                {# Mobile-only hamburger: shown below 992px (see gridview-shell.css),
-                   toggles the off-screen sidebar via assets/sidebar-toggle.js. #}
-                <button class="gv-sidebar-toggle" type="button"
-                        data-gv-sidebar-toggle
-                        aria-controls="gv-sidebar" aria-expanded="false"
-                        aria-label="Toggle menu">
-                    <i class="fas fa-bars"></i>
-                </button>
-                {# Mobile-only brand title (EA's responsive-header logo); hidden from 992px up,
-                   where the sidebar logo takes over. Replaces the search on narrow screens. #}
-                <a class="gv-brand-title" href="{{ path('gridview_dashboard') }}">Fedale Gridview Demo</a>
-                {# Pages without a grid (e.g. the dashboard) override this block to drop the search box. #}
+                {# Upper bar: hamburger + centered brand title + user icon + settings gear,
+                   sitting on the --gv-responsive-bg background (see gridview-shell.css). #}
+                <div class="gv-content-top-bar">
+                    {# Mobile-only hamburger: shown below 992px (see gridview-shell.css),
+                       toggles the off-screen sidebar via assets/sidebar-toggle.js. #}
+                    <button class="gv-sidebar-toggle" type="button"
+                            data-gv-sidebar-toggle
+                            aria-controls="gv-sidebar" aria-expanded="false"
+                            aria-label="Toggle menu">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    {# Brand title, centered within the bar at every width. #}
+                    <a class="gv-brand-title" href="{{ path('gridview_dashboard') }}">Fedale Gridview Demo</a>
+
+                    {# Decorative user icon (no auth in this demo): mirrors EA's user menu for
+                       visual parity. Shown at every width, paired with the theme gear. #}
+                    <span class="gv-user-icon" title="Not signed in" aria-hidden="true">
+                        <i class="fas fa-circle-user"></i>
+                    </span>
+
+                    {# Reuse the grid's own dropdown controller (no Bootstrap JS on this page). #}
+                    <div class="dropdown-settings gv-dropdown" data-controller="gridview-dropdown">
+                        <button class="btn" type="button" data-action="gridview-dropdown#toggle" aria-expanded="false" title="Settings">
+                            <i class="fas fa-gear"></i>
+                        </button>
+                        <ul class="gv-dropdown-menu">
+                            <li class="gv-dropdown-header">Theme</li>
+                            <li><button type="button" class="gv-dropdown-item" data-gv-theme-value="light"><i class="fas fa-sun fa-fw"></i> Light</button></li>
+                            <li><button type="button" class="gv-dropdown-item" data-gv-theme-value="dark"><i class="fas fa-moon fa-fw"></i> Dark</button></li>
+                            <li><button type="button" class="gv-dropdown-item" data-gv-theme-value="auto"><i class="fas fa-circle-half-stroke fa-fw"></i> Auto</button></li>
+                            <li><hr></li>
+                            <li class="gv-dropdown-header">Language</li>
+                            {% for loc in ['en', 'es', 'fr'] %}
+                                <li><a class="gv-dropdown-item{{ app.request.locale == loc ? ' is-active' : '' }}" href="?_locale={{ loc }}">{{ loc|upper }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+
+                {# Lower row: just the search. Pages without a grid (e.g. the dashboard)
+                   override this block to drop the whole search row. #}
                 {% block content_search %}
-                <div class="content-search">
-                    <form class="form-action-search" method="get" action="{{ app.request.pathInfo }}">
-                        <div class="form-group">
-                            <div class="form-widget">
-                                <i class="fas fa-magnifying-glass content-search-icon"></i>
-                                <label class="content-search-label" data-value="{{ search_q }}">
-                                    <input class="form-control{{ search_q == '' ? ' is-blank' : '' }}" type="search"
-                                           name="{{ form_name }}[_q]" value="{{ search_q }}"
-                                           placeholder="Search" spellcheck="false" autocorrect="off"
-                                           onInput="this.parentNode.dataset.value=this.value">
-                                </label>
+                <div class="gv-content-top-search">
+                    <div class="content-search">
+                        <form class="form-action-search" method="get" action="{{ app.request.pathInfo }}">
+                            <div class="form-group">
+                                <div class="form-widget">
+                                    <i class="fas fa-magnifying-glass content-search-icon"></i>
+                                    <label class="content-search-label" data-value="{{ search_q }}">
+                                        <input class="form-control{{ search_q == '' ? ' is-blank' : '' }}" type="search"
+                                               name="{{ form_name }}[_q]" value="{{ search_q }}"
+                                               placeholder="Search" spellcheck="false" autocorrect="off"
+                                               onInput="this.parentNode.dataset.value=this.value"
+                                               {# Native "x" clears the field and fires `search` (Enter does too):
+                                                  on an empty value re-submit so the _q filter is dropped. The
+                                                  empty guard avoids a double submit on Enter, which already
+                                                  triggers the form's native GET submission. #}
+                                               onSearch="if(this.value===''){this.form.requestSubmit();}">
+                                    </label>
+                                </div>
                             </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
                 {% endblock %}
-
-                {# Decorative user icon (no auth in this demo): mirrors EA's user menu for
-                   visual parity. Shown at every width, paired with the theme gear. #}
-                <span class="gv-user-icon" title="Not signed in" aria-hidden="true">
-                    <i class="fas fa-circle-user"></i>
-                </span>
-
-                {# Reuse the grid's own dropdown controller (no Bootstrap JS on this page). #}
-                <div class="dropdown-settings gv-dropdown" data-controller="gridview-dropdown">
-                    <button class="btn" type="button" data-action="gridview-dropdown#toggle" aria-expanded="false" title="Settings">
-                        <i class="fas fa-gear"></i>
-                    </button>
-                    <ul class="gv-dropdown-menu">
-                        <li class="gv-dropdown-header">Theme</li>
-                        <li><button type="button" class="gv-dropdown-item" data-gv-theme-value="light"><i class="fas fa-sun fa-fw"></i> Light</button></li>
-                        <li><button type="button" class="gv-dropdown-item" data-gv-theme-value="dark"><i class="fas fa-moon fa-fw"></i> Dark</button></li>
-                        <li><button type="button" class="gv-dropdown-item" data-gv-theme-value="auto"><i class="fas fa-circle-half-stroke fa-fw"></i> Auto</button></li>
-                        <li><hr></li>
-                        <li class="gv-dropdown-header">Language</li>
-                        {% for loc in ['en', 'es', 'fr'] %}
-                            <li><a class="gv-dropdown-item{{ app.request.locale == loc ? ' is-active' : '' }}" href="?_locale={{ loc }}">{{ loc|upper }}</a></li>
-                        {% endfor %}
-                    </ul>
-                </div>
             </aside>
 
             <div class="content-wrapper">
