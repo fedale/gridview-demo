@@ -26,7 +26,7 @@ class CategoryController extends AbstractCrudGridController
         return Category::class;
     }
 
-    protected function configure(): array
+    protected function viewConfig(): array
     {
         return [
             'id'             => 'category',
@@ -38,7 +38,7 @@ class CategoryController extends AbstractCrudGridController
         ];
     }
 
-    protected function getDataProviderConfig(): array
+    protected function dataConfig(): array
     {
         return [
             'models'     => Category::class,

@@ -25,7 +25,7 @@ class TagController extends AbstractCrudGridController
         return Tag::class;
     }
 
-    protected function configure(): array
+    protected function viewConfig(): array
     {
         return [
             'id' => 'tag',
@@ -35,6 +35,10 @@ class TagController extends AbstractCrudGridController
             // Tag-specific index that hosts the "Add Tag" button in the page
             // content-header (non-modal link) instead of the in-grid toolbar.
             'indexTemplate' => 'gridview/tag/index.html.twig',
+            // The "Add Tag" link is a direct (non-XHR) navigation, so the CRUD
+            // form is served as a full page. Wrap it in the demo shell (sidebar +
+            // main-content) instead of the bundle's bare crud/page.html.twig.
+            'pageTemplate' => 'gridview/crud_page.html.twig',
             // Action layout mirroring EasyAdmin's TagCrudController: the custom
             // "View posts" action, then inline edit and the ROLE_ADMIN delete.
             // The buttons themselves are wired in defaultActionButtons().
@@ -67,6 +71,7 @@ class TagController extends AbstractCrudGridController
             $buttons['delete'] = ['content' => $buttons['delete'], 'roles' => ['ROLE_ADMIN']];
         }
 
+        /*
         $theme = $this->actionButtonTheme();
         $label = $this->actionLabel('action.view_posts', 'messages');
         $buttons['viewPosts'] = fn(array $row): string => CrudButton::link(
@@ -79,11 +84,11 @@ class TagController extends AbstractCrudGridController
             $label,
             'action.view_posts',
         );
-
+*/
         return $buttons;
     }
 
-    protected function getDataProviderConfig(): array
+    protected function dataConfig(): array
     {
         return [
             'models' => Tag::class,
@@ -94,7 +99,7 @@ class TagController extends AbstractCrudGridController
                 'postCount' => ['asc' => ['postCount'], 'desc' => ['postCount']],
             ],
             'enableMultiSort' => true,
-            'defaultOrder' => ['name' => 'asc', 'id' => 'asc'],
+            'defaultSort' => ['name' => 'asc', 'id' => 'asc'],
 
         ];
     }
@@ -131,14 +136,14 @@ class TagController extends AbstractCrudGridController
                 'label' => 'tag.posts',
                 'sortable' => true,
                 'value' => fn(array $data, int $index, DataColumn $column): string =>
-                    $column->renderTemplate('gridview/tag/_posts_popularity.html.twig', [
-                        'count' => (int) ($data['postCount'] ?? 0),
-                        'published' => (int) ($data['publishedCount'] ?? 0),
-                    ]),
+                $column->renderTemplate('gridview/tag/_posts_popularity.html.twig', [
+                    'count' => (int) ($data['postCount'] ?? 0),
+                    'published' => (int) ($data['publishedCount'] ?? 0),
+                ]),
                 'twigFilter' => 'raw',
             ],
             // Auto-wired to the CRUD routes; the buttons/layout come from
-            // configure() + defaultActionButtons() above (EA parity).
+            // viewConfig() + defaultActionButtons() above (EA parity).
             ['type' => 'action', 'label' => 'Actions'],
         ];
     }
