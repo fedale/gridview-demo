@@ -1,0 +1,44 @@
+{#
+   Full-page wrapper for non-modal CRUD forms (the bundle's crud.mode = 'page',
+   and the no-JS fallback for modal grids). Reuses the EasyAdmin-style shell
+   (gridview/layout) so the add/edit form shares the sidebar + main-content chrome
+   instead of the bundle's bare crud/page.html.twig.
+
+   Wired per controller via the `pageTemplate` CRUD config; the controller passes
+   `pageTitle` + the already-rendered `formHtml`. No `gridview` is in scope here
+   (the form page is built outside the grid), so the shell's grid-dependent bits
+   fall back via |default and the top-bar search box is dropped.
+#}
+{% extends 'gridview/layout.html.twig' %}
+
+{# `pageTitle` is a label key (e.g. tag.add): resolve it the same way as the grid
+   heading/add button — app-owned key via the client i18n domain, otherwise the
+   translatable system fallback. Empty falls back to the active menu label. #}
+{% set _pageTitle = pageTitle|default('') %}
+{% set _pageTitleText = _pageTitle is not empty
+    ? (gv_client_label(_pageTitle) ? gv_client_text(_pageTitle) : _pageTitle|trans({}, 'GridviewBundle'))
+    : active_label %}
+
+{% block page_title %}{{ _pageTitleText }}{% endblock %}
+{% block content_title %}{% if _pageTitle is not empty and gv_client_label(_pageTitle) %}<span {{ gv_i18n(_pageTitle) }}>{{ _pageTitleText }}</span>{% else %}{{ _pageTitleText }}{% endif %}{% endblock %}
+
+{# No grid on this page, so the top-bar search would do nothing: hide it. #}
+{% block content_search %}{% endblock %}
+
+{# EA-style action row: when the form drops its in-form submit (formActionsInHeader),
+   render the configured `formActions` buttons next to the title. They live outside
+   the <form> element and submit it via the HTML5 `form="<id>"` attribute (the bundle
+   partial handles label i18n, submit vs link, and the `_action` value per button). #}
+{% block content_header_actions %}
+    {% if formActionsInHeader|default(false) and formId|default('') is not empty %}
+        <div class="content-header-actions">
+            {% include '@FedaleGridview/crud/_form_actions.html.twig' %}
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block grid %}
+    <div class="gv-crud-page">
+        {{ formHtml|raw }}
+    </div>
+{% endblock %}

@@ -72,6 +72,21 @@ return [
         'label_plural' => 'Etiquetas',
         'name' => 'Nombre',
         'posts' => 'Artículos',
+        'filter' => [
+            'button' => 'Filtrar',
+            'title' => 'Filtros',
+            'apply' => 'Aplicar',
+            'clear' => 'Cerrar',
+            'reset' => 'Restablecer filtros',
+            'comparison' => [
+                'contains' => 'contiene',
+                'not_contains' => 'no contiene',
+                'starts_with' => 'empieza por',
+                'ends_with' => 'termina en',
+                'exactly' => 'exactamente',
+                'not_exactly' => 'distinto de',
+            ],
+        ],
     ],
 
     // Category fields
@@ -146,6 +161,10 @@ return [
         'mark_complete' => 'Marcar completa',
         'mark_incomplete' => 'Marcar incompleta',
         'change_status' => 'Cambiar estado',
+        'create' => 'Crear',
+        'save' => 'Guardar cambios',
+        'create_add_another' => 'Crear y añadir otro',
+        'return_listing' => 'Volver al listado',
     ],
 
     // Batch actions

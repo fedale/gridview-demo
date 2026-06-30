@@ -17,15 +17,113 @@
 
 {% block content_header_actions %}
     {% set _crud = gridview.options.crud|default({}) %}
-    {% if _crud.addUrl is defined and _crud.addUrl is not empty %}
-        {% set _addLabel = gridview.options.addLabel|default('Add') %}
-        {# Mirror the bundle addButton label resolution: app-owned key via the
-           client domain, otherwise the translatable system fallback. #}
-        {% set _addText = gv_client_label(_addLabel) ? gv_client_text(_addLabel) : _addLabel|trans({}, 'GridviewBundle') %}
-        <div class="content-header-actions">
+    {# The name filter field is built on the SearchForm even though its per-column
+       header input is suppressed (TagController sets the column's filterBar=true);
+       we surface it here in a custom modal instead. #}
+    {% set _hasFilters = form is defined and form is not null and form['name'] is defined %}
+
+    {# `data-gridview` scopes the bundle's --gv-* tokens and .gv-modal/.gv-btn rules
+       (all defined under [data-gridview]) onto this content-header island, which
+       sits outside the actual grid element. It carries no gridview data-controller,
+       so the bundle's Stimulus controllers ignore it. #}
+    <div class="content-header-actions" data-controller="tag-filter" data-gridview>
+        {% if _hasFilters %}
+            {% set _nameActive = form['name'].vars.value is not empty %}
+            {% set _activeCount = _nameActive ? 1 : 0 %}
+            <div class="btn-group action-filters" role="group">
+                <button type="button" class="{{ gridview.cls('btn') }}{{ _nameActive ? ' action-filters-applied' : '' }}"
+                        data-action="tag-filter#open">
+                    <span class="{{ gridview.cls('btn.icon') }}" aria-hidden="true">
+                        {# Font Awesome "filter" funnel (inline, dependency-free). #}
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor"
+                             style="width:.85em;height:.85em;vertical-align:-0.075em;"><path d="M3.9 54.9C10.5 40.9 24.5 32 40 32l432 0c15.5 0 29.5 8.9 36.1 22.9s4.6 30.5-5.2 42.5L320 320.9 320 448c0 12.1-6.8 23.2-17.7 28.6s-23.8 4.3-33.5-3l-64-48c-8.1-6-12.8-15.5-12.8-25.6l0-79.1L9 97.3C-.7 85.4-2.8 68.8 3.9 54.9z"/></svg>
+                    </span>
+                    {{ 'tag.filter.button'|trans }}{% if _activeCount %} <span class="action-filters-button-count">({{ _activeCount }})</span>{% endif %}
+                </button>
+                {% if _nameActive %}
+                    {# Reset all filters: plain link to the bare index (drops `myform`,
+                       so the data provider reapplies its defaults — EA's reset). #}
+                    <a href="{{ path('gridview_tag_index') }}" class="{{ gridview.cls('btn') }} action-filters-reset"
+                       title="{{ 'tag.filter.reset'|trans }}" aria-label="{{ 'tag.filter.reset'|trans }}">
+                        <span class="{{ gridview.cls('btn.icon') }}" aria-hidden="true">
+                            {# Font Awesome "xmark" (inline, dependency-free). #}
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" fill="currentColor"
+                                 style="width:.85em;height:.85em;vertical-align:-0.075em;"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg>
+                        </span>
+                    </a>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        {% if _crud.addUrl is defined and _crud.addUrl is not empty %}
+            {% set _addLabel = gridview.options.addLabel|default('Add') %}
+            {# Mirror the bundle addButton label resolution: app-owned key via the
+               client domain, otherwise the translatable system fallback. #}
+            {% set _addText = gv_client_label(_addLabel) ? gv_client_text(_addLabel) : _addLabel|trans({}, 'GridviewBundle') %}
             <a href="{{ _crud.addUrl }}" class="{{ gridview.cls('btn.primary') }}" {{ gv_i18n(_addLabel) }}>
                 <span class="{{ gridview.cls('btn.icon') }}" aria-hidden="true">+</span>{{ _addText }}
             </a>
+        {% endif %}
+
+        {% if _hasFilters %}
+        {# Self-contained filter modal (gv-modal classes, no Bootstrap JS), driven
+           by the tag-filter Stimulus controller. Each row mirrors EasyAdmin: a
+           checkbox enables the filter, a comparison <select> (UI-only, no name)
+           picks the operator, and a text input holds the term. On Apply the
+           controller combines them into the real `myform[name]` carrier as
+           "<operator> <term>" — a syntax TextFilterApplier parses 1:1 with EA
+           (like / not like / starts / ends / exactly / not exactly). The hidden
+           carrier is the only named field, so the comparison select never leaks
+           into the query. A disabled/empty carrier is not submitted → filter off. #}
+        <div class="gv-modal" tabindex="-1" aria-hidden="true"
+             data-tag-filter-target="modal"
+             data-action="click->tag-filter#backdropClose">
+            <div class="gv-modal__dialog" role="dialog" aria-modal="true">
+                <div class="gv-modal__header">
+                    <h2 class="gv-modal__title">{{ 'tag.filter.title'|trans }}</h2>
+                    <button type="button" class="gv-modal__close" data-action="tag-filter#close"
+                            aria-label="{{ 'tag.filter.clear'|trans }}">&times;</button>
+                </div>
+                <form method="get" action="{{ path('gridview_tag_index') }}"
+                      data-action="submit->tag-filter#apply">
+                    <div class="gv-modal__body">
+                        <div class="gv-filter-modal__row" data-tag-filter-row
+                             style="display:flex; align-items:center; gap:.6rem; flex-wrap:wrap;">
+                            <label class="gv-filter-modal__check"
+                                   style="display:inline-flex; align-items:center; gap:.4rem; white-space:nowrap; min-width:6rem;">
+                                <input type="checkbox" data-tag-filter-toggle
+                                       data-action="change->tag-filter#toggle"
+                                       {{ _nameActive ? 'checked' : '' }}>
+                                {{ 'tag.name'|trans }}
+                            </label>
+                            {# Comparison operator — values are gridview operator tokens
+                               (non-i variants, collation-driven, matching EasyAdmin). #}
+                            <select class="form-select" data-tag-filter-comparison
+                                    style="width:auto; flex:0 0 auto;">
+                                <option value="like">{{ 'tag.filter.comparison.contains'|trans }}</option>
+                                <option value="nlike">{{ 'tag.filter.comparison.not_contains'|trans }}</option>
+                                <option value="startwith">{{ 'tag.filter.comparison.starts_with'|trans }}</option>
+                                <option value="endwith">{{ 'tag.filter.comparison.ends_with'|trans }}</option>
+                                <option value="eq">{{ 'tag.filter.comparison.exactly'|trans }}</option>
+                                <option value="neq">{{ 'tag.filter.comparison.not_exactly'|trans }}</option>
+                            </select>
+                            <input type="text" class="form-control" data-tag-filter-term
+                                   style="flex:1; min-width:8rem;" autocomplete="off">
+                            {# The only submitted field. JS fills value on Apply; the
+                               server-side value seeds the round-trip parse on connect. #}
+                            <input type="hidden" name="{{ form['name'].vars.full_name }}"
+                                   value="{{ form['name'].vars.value }}" data-tag-filter-value>
+                        </div>
+                    </div>
+                    <div class="gv-modal__footer"
+                         style="display:flex; justify-content:flex-end; gap:.5rem; padding:1.1rem; border-top:1px solid var(--gv-color-border);">
+                        <button type="button" class="{{ gridview.cls('btn') }}"
+                                data-action="tag-filter#close">{{ 'tag.filter.clear'|trans }}</button>
+                        <button type="submit" class="{{ gridview.cls('btn.primary') }}">{{ 'tag.filter.apply'|trans }}</button>
+                    </div>
+                </form>
+            </div>
         </div>
-    {% endif %}
+        {% endif %}
+    </div>
 {% endblock %}

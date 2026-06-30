@@ -1541,7 +1541,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *             globalSearch?: list<scalar|Param|null>,
  *             addRoute?: scalar|Param|null, // Default: null
  *             addLabel?: scalar|Param|null, // Default: "Add"
- *             formName?: scalar|Param|null, // Default: "myform"
+ *             formName?: scalar|Param|null, // Default: "fedaleForm"
  *             maxQueryLength?: int|Param, // Default: 4000
  *             filterControls?: array{
  *                 headerIcon?: bool|Param, // Default: true

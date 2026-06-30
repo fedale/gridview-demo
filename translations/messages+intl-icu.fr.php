@@ -116,6 +116,21 @@ return [
         'label_plural' => 'Tags',
         'name' => 'Nom',
         'posts' => 'Articles',
+        'filter' => [
+            'button' => 'Filtrer',
+            'title' => 'Filtres',
+            'apply' => 'Appliquer',
+            'clear' => 'Fermer',
+            'reset' => 'Réinitialiser les filtres',
+            'comparison' => [
+                'contains' => 'contient',
+                'not_contains' => 'ne contient pas',
+                'starts_with' => 'commence par',
+                'ends_with' => 'se termine par',
+                'exactly' => 'exactement',
+                'not_exactly' => 'différent de',
+            ],
+        ],
     ],
 
     // Category fields
@@ -239,6 +254,10 @@ return [
         'mark_complete' => 'Marquer terminée',
         'mark_incomplete' => 'Marquer non terminée',
         'change_status' => 'Changer le statut',
+        'create' => 'Créer',
+        'save' => 'Enregistrer',
+        'create_add_another' => 'Créer et en ajouter un autre',
+        'return_listing' => 'Retour à la liste',
     ],
 
     // Batch actions

@@ -29,12 +29,13 @@ class CategoryController extends AbstractCrudGridController
     protected function viewConfig(): array
     {
         return [
-            'id'             => 'category',
-            'title'          => 'category.label',
-            'addLabel'       => 'New category',
-            'exportFilename' => 'categories',
-            'indexTemplate'  => 'gridview/index.html.twig',
-            'options'        => ['globalSearch' => ['name']],
+            // id ('category') and the heading ('category.label') derive from the
+            // entity; only the add label (no `category.add` key) and the plural
+            // export filename are overridden.
+            'labels'   => ['add' => 'New category'],
+            'export'   => ['filename' => 'categories'],
+            'template' => ['index' => 'gridview/index.html.twig'],
+            'options'  => ['globalSearch' => ['name']],
         ];
     }
 

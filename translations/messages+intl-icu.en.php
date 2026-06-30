@@ -117,6 +117,21 @@ return [
         'name' => 'Name',
         'posts' => 'Posts',
         'add' => 'Add tag',
+        'filter' => [
+            'button' => 'Filter',
+            'title' => 'Filters',
+            'apply' => 'Apply',
+            'clear' => 'Clear',
+            'reset' => 'Reset filters',
+            'comparison' => [
+                'contains' => 'contains',
+                'not_contains' => "doesn't contain",
+                'starts_with' => 'starts with',
+                'ends_with' => 'ends with',
+                'exactly' => 'exactly',
+                'not_exactly' => 'not exactly',
+            ],
+        ],
     ],
 
     // Category fields
@@ -240,6 +255,10 @@ return [
         'mark_complete' => 'Mark complete',
         'mark_incomplete' => 'Mark incomplete',
         'change_status' => 'Change status',
+        'create' => 'Create',
+        'save' => 'Save changes',
+        'create_add_another' => 'Create and add another',
+        'return_listing' => 'Return to listing',
     ],
 
     // Batch actions

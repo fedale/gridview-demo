@@ -1,6 +1,16 @@
 /* App-side tweaks for the EasyAdmin-style shell that wraps the gridview pages.
    Only what the reused EA theme files don't already cover. */
 
+/* CRUD form page: the action row next to the title (Return to listing /
+   Create and add another / Create). Lay the buttons out in a right-aligned
+   row with a small gap, vertically centered with the <h1>. */
+.content-header-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+    align-items: center;
+}
+
 /* Sidebar entries for entities whose gridview controller isn't built yet. */
 .menu-item.disabled .menu-item-contents {
     opacity: .45;
@@ -12,6 +22,18 @@
    grid's own global-search box (enabled per-grid to feed that search). */
 .gv-global-search {
     display: none;
+}
+
+/* Pages without a grid (form pages, dashboard) drop the .content-search box, so
+   the flex:1 filler that normally pins the right cluster (user icon + settings
+   gear) to the right edge is gone, and content-top's justify-content:space-between
+   splits the two icons to opposite edges. Re-pin them right by letting the first
+   one absorb the free space; when the search IS present its flex:1 leaves no free
+   space, so this margin is a no-op. Desktop only — mobile uses explicit `order`. */
+@media (min-width: 992px) {
+    .content-top > .gv-user-icon {
+        margin-inline-start: auto;
+    }
 }
 
 /* EA's search-input reset only targets name="query", but our input is named
