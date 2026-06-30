@@ -144,6 +144,7 @@ class TagController extends AbstractCrudGridController
     protected function buildColumns(): array
     {
         return [
+            ['attribute' => 'checkbox', 'type' => 'checkbox'],
             'id',
             [
                 'attribute' => 'name',
