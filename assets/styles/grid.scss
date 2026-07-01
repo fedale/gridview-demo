@@ -4,3 +4,43 @@
 // vendor/fedale/gridview-bundle/assets/styles/gridview.scss, which pulls its own
 // `tokens` / `dark` partials and the deferred flatpickr stub.
 @use 'gridview';
+
+// EasyAdmin's ColorField swatch. EA ships this rule in its own theme CSS, which
+// the demo doesn't pull in, so replicate it verbatim for the Category grid's
+// color column (vars come from vendor-easyadmin/variables-theme.css).
+.field-color .color-sample {
+    block-size: 19px;
+    border-radius: var(--border-radius);
+    box-shadow: 0 0 0 2px var(--border-tertiary-color), 0 0 0 3px var(--border-secondary-color);
+    display: inline-block;
+    inline-size: 45px;
+}
+
+// EasyAdmin-style actions dropdown (see CategoryController::renderActionsMenu).
+// The open/close behavior and menu chrome come from the bundle's own gv-dropdown
+// styles; here we only style the 3-dots toggle and the item icon + label.
+[data-gridview] .dropdown-actions {
+    .gv-actions-toggle {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 4px;
+        border: 0;
+        background: none;
+        color: var(--gv-color-text-muted);
+        cursor: pointer;
+        border-radius: var(--gv-dropdown-radius, 6px);
+
+        &:hover { color: var(--gv-color-text); }
+
+        .icon svg { width: 20px; height: 20px; }
+    }
+
+    .gv-dropdown-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        .action-icon svg { width: 14px; height: 14px; }
+    }
+}

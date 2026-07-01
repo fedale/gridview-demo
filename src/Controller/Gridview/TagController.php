@@ -186,7 +186,7 @@ class TagController extends AbstractCrudGridController
                 'postCount' => ['asc' => ['postCount'], 'desc' => ['postCount']],
             ],
             //'enableMultiSort' => true,
-            'defaultSort' => ['name' => 'asc', 'id' => 'asc'],
+            'defaultSort' => ['name' => 'asc'],
 
         ];
     }

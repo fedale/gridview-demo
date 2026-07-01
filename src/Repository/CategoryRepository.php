@@ -32,7 +32,8 @@ class CategoryRepository extends ServiceEntityRepository
             ->addSelect("(SELECT COUNT(pp.id) FROM App\\Entity\\Post pp WHERE pp.category = c AND pp.status = 'published') AS publishedCount");
 
         $this->searchForm->applyFilters($qb, $params, [
-            'name' => ['text', 'c.name'],
+            'name'     => ['text', 'c.name'],
+            'position' => ['number', 'c.position'],
         ]);
 
         return $qb;
