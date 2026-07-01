@@ -32,23 +32,29 @@ class CategoryController extends AbstractCrudGridController
             // id ('category') and the heading ('category.label') derive from the
             // entity; only the add label (no `category.add` key) and the plural
             // export filename are overridden.
-            'labels'   => ['add' => 'New category'],
-            'export'   => ['filename' => 'categories'],
+            'labels' => ['add' => 'New category'],
+            'export' => ['filename' => 'categories'],
             'template' => ['index' => 'gridview/index.html.twig'],
-            'options'  => ['globalSearch' => ['name']],
+            'options' => [
+                'globalSearch' => ['name'],
+                // Render active-filter chips on their own row under the toolbar
+                // (the `name` column opts into the `chip` clear mode below).
+                'layout' => ['header' => '{heading} {toolbar} {filterChips}'],
+                'filterControls' => ['clear' => 'chip'],
+            ],
         ];
     }
 
     protected function dataConfig(): array
     {
         return [
-            'models'     => Category::class,
+            'models' => Category::class,
             'pagination' => ['defaultPageSize' => 20],
-            'sort'       => [
-                'id'             => ['asc' => ['c.id'],       'desc' => ['c.id']],
-                'name'           => ['asc' => ['c.name'],     'desc' => ['c.name']],
-                'position'       => ['asc' => ['c.position'], 'desc' => ['c.position'], 'default' => 'asc'],
-                'postCount'      => ['asc' => ['postCount'], 'desc' => ['postCount']],
+            'sort' => [
+                'id' => ['asc' => ['c.id'], 'desc' => ['c.id']],
+                'name' => ['asc' => ['c.name'], 'desc' => ['c.name']],
+                'position' => ['asc' => ['c.position'], 'desc' => ['c.position'], 'default' => 'asc'],
+                'postCount' => ['asc' => ['postCount'], 'desc' => ['postCount']],
             ],
             'defaultSort' => ['position' => 'asc'],
         ];
@@ -73,33 +79,35 @@ class CategoryController extends AbstractCrudGridController
             'id',
             [
                 'attribute' => 'name',
-                'label'     => 'category.name',
-                'sortable'  => true,
-                'filter'    => ['type' => 'text'],
-                'editable'  => true,
-                'control'   => ['type' => 'text', 'required' => true],
+                'label' => 'category.name',
+                'sortable' => true,
+                // Clear affordances: the header funnel icon AND an external chip
+                // (rendered by the {filterChips} section, see viewConfig()).
+                'filter' => ['type' => 'text', 'clear' => ['header', 'chip']],
+                'editable' => true,
+                'control' => ['type' => 'text', 'required' => true],
             ],
             // Slug: auto-generated from the name on create (see beforeSave), so the
             // control only appears when editing. Hidden from the grid; kept unique.
             [
                 'attribute' => 'slug',
-                'label'     => 'category.slug',
-                'visible'   => false,
-                'control'   => ['type' => 'text', 'modes' => ['edit'], 'required' => false, 'unique' => true],
+                'label' => 'category.slug',
+                'visible' => false,
+                'control' => ['type' => 'text', 'modes' => ['edit'], 'required' => false, 'unique' => true],
             ],
             // Description: form-only (hidden from the grid), matching the admin.
             [
                 'attribute' => 'description',
-                'label'     => 'category.description',
-                'visible'   => false,
-                'control'   => ['type' => 'html', 'required' => false],
+                'label' => 'category.description',
+                'visible' => false,
+                'control' => ['type' => 'html', 'required' => false],
             ],
             [
                 'attribute' => 'color',
-                'label'     => 'category.color',
+                'label' => 'category.color',
                 // Replica of EasyAdmin's ColorField with ->showValue(): the swatch
                 // (styled via `.field-color .color-sample`) followed by the hex value.
-                'value'     => static function (array $data): Markup {
+                'value' => static function (array $data): Markup {
                     $color = htmlspecialchars((string) ($data['color'] ?? ''), ENT_QUOTES);
 
                     return new Markup(\sprintf(
@@ -107,36 +115,36 @@ class CategoryController extends AbstractCrudGridController
                         $color
                     ), 'UTF-8');
                 },
-                'control'   => ['type' => 'color', 'required' => true],
+                'control' => ['type' => 'color', 'required' => true],
             ],
             [
                 'attribute' => 'position',
-                'label'     => 'category.position',
-                'type'      => 'number',
-                'filter'    => ['type' => 'text'],
-                'sortable'  => true,
-                'editable'  => true,
-                'control'   => ['type' => 'integer', 'required' => true],
+                'label' => 'category.position',
+                'type' => 'number',
+                'filter' => ['type' => 'text'],
+                'sortable' => true,
+                'editable' => true,
+                'control' => ['type' => 'integer', 'required' => true],
             ],
             // Post stats merged into one column: total count + published count,
             // with a left accent bar tinted with the category color.
             [
                 'attribute' => 'postCount',
-                'label'     => 'category.posts',
-                'sortable'  => true,
-                'type'      => 'number',
-                'filter'    => true,
-                'value'     => static function (array $data): Markup {
-                    $color     = htmlspecialchars((string) ($data['color'] ?? ''), ENT_QUOTES);
-                    $posts     = (int) ($data['postCount'] ?? 0);
+                'label' => 'category.posts',
+                'sortable' => true,
+                'type' => 'number',
+                'filter' => true,
+                'value' => static function (array $data): Markup {
+                    $color = htmlspecialchars((string) ($data['color'] ?? ''), ENT_QUOTES);
+                    $posts = (int) ($data['postCount'] ?? 0);
                     $published = (int) ($data['publishedCount'] ?? 0);
 
                     return new Markup(\sprintf(
                         '<div class="category-stats d-flex align-items-center gap-2" style="border-left: 3px solid %s; padding-left: 8px;">'
-                            . '<strong>%d</strong>'
-                            . '<span>posts</span>'
-                            . '<small class="text-muted">(%d published)</small>'
-                            . '</div>',
+                        . '<strong>%d</strong>'
+                        . '<span>posts</span>'
+                        . '<small class="text-muted">(%d published)</small>'
+                        . '</div>',
                         $color,
                         $posts,
                         $published
@@ -148,9 +156,9 @@ class CategoryController extends AbstractCrudGridController
             // no detail route of its own). Rendered as a single button so the
             // whole dropdown lands in one cell; see renderActionsMenu().
             [
-                'type'    => 'action',
-                'label'   => false,
-                'layout'  => '{menu}',
+                'type' => 'action',
+                'label' => false,
+                'layout' => '{menu}',
                 'buttons' => [
                     'menu' => fn(array $row): string => $this->renderActionsMenu($row),
                 ],
@@ -176,8 +184,8 @@ class CategoryController extends AbstractCrudGridController
      */
     private function renderActionsMenu(array $row): string
     {
-        $id      = (int) $row['id'];
-        $locale  = $this->container->get('request_stack')->getCurrentRequest()?->getLocale() ?? 'en';
+        $id = (int) $row['id'];
+        $locale = $this->container->get('request_stack')->getCurrentRequest()?->getLocale() ?? 'en';
         $editUrl = htmlspecialchars($this->generateUrl($this->routeName('update'), ['id' => $id]), \ENT_QUOTES);
         $showUrl = htmlspecialchars(
             $this->generateUrl('admin_category_detail', ['entityId' => $id, '_locale' => $locale]),
@@ -186,17 +194,17 @@ class CategoryController extends AbstractCrudGridController
 
         return \sprintf(
             '<div class="gv-dropdown dropdown-actions" data-controller="gridview-dropdown">'
-                . '<button type="button" class="gv-actions-toggle" data-action="gridview-dropdown#toggle" aria-haspopup="true" aria-expanded="false">'
-                . '<span class="icon">%s</span>'
-                . '</button>'
-                . '<ul class="gv-dropdown-menu gv-dropdown-menu--end">'
-                . '<li><a class="gv-dropdown-item action-edit" data-action-name="edit" href="%s"'
-                . ' data-action="gridview-crud#open" data-gridview-crud-url-param="%s">'
-                . '<span class="icon action-icon">%s</span><span class="action-label">Edit</span></a></li>'
-                . '<li><a class="gv-dropdown-item action-detail" data-action-name="detail" href="%s">'
-                . '<span class="icon action-icon">%s</span><span class="action-label">Show</span></a></li>'
-                . '</ul>'
-                . '</div>',
+            . '<button type="button" class="gv-actions-toggle" data-action="gridview-dropdown#toggle" aria-haspopup="true" aria-expanded="false">'
+            . '<span class="icon">%s</span>'
+            . '</button>'
+            . '<ul class="gv-dropdown-menu gv-dropdown-menu--end">'
+            . '<li><a class="gv-dropdown-item action-edit" data-action-name="edit" href="%s"'
+            . ' data-action="gridview-crud#open" data-gridview-crud-url-param="%s">'
+            . '<span class="icon action-icon">%s</span><span class="action-label">Edit</span></a></li>'
+            . '<li><a class="gv-dropdown-item action-detail" data-action-name="detail" href="%s">'
+            . '<span class="icon action-icon">%s</span><span class="action-label">Show</span></a></li>'
+            . '</ul>'
+            . '</div>',
             self::ICON_DOTS,
             $editUrl,
             $editUrl,

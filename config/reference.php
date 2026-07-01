@@ -1546,6 +1546,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *             filterControls?: array{
  *                 inHeader?: bool|Param, // Default: true
  *                 inlineClear?: bool|Param, // Default: false
+ *                 clear?: mixed, // Default: null
  *             },
  *             pagination?: array{
  *                 mode?: scalar|Param|null, // Default: "numeric"
