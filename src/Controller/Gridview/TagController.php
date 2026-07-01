@@ -185,7 +185,7 @@ class TagController extends AbstractCrudGridController
                 'name' => ['asc' => ['t.name'], 'desc' => ['t.name'], 'default' => 'asc'],
                 'postCount' => ['asc' => ['postCount'], 'desc' => ['postCount']],
             ],
-            'enableMultiSort' => true,
+            //'enableMultiSort' => true,
             'defaultSort' => ['name' => 'asc', 'id' => 'asc'],
 
         ];
@@ -239,7 +239,7 @@ class TagController extends AbstractCrudGridController
             ],
             // Auto-wired to the CRUD routes; the buttons/layout come from
             // viewConfig() + defaultActionButtons() above (EA parity).
-            ['type' => 'action', 'label' => 'Actions'],
+            ['type' => 'action', 'label' => false],
         ];
     }
 }
