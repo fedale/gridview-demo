@@ -93,7 +93,14 @@ class TagController extends AbstractCrudGridController
                 // Drop the whole gv-region--header (heading + toolbar): the Add
                 // button lives in the page content-header instead, and this grid
                 // has no other toolbar controls. {dataview} + {footer} remain.
-                'layout' => ['shell' => '{dataview} {footer}'],
+                // 'layout' => ['shell' => '{dataview} {footer}'],
+                'layout' => ['shell' => '{bulkBar} {dataview} {footer}'],
+                // Bulk URLs are auto-derived by AbstractCrudGridController; this
+                // only whitelists which buttons show. Deep-merged over the auto
+                // crud options, so the URLs/title are preserved. Keep Delete only.
+                'crud' => [
+                    'bulkActions' => ['delete' => true],
+                ],
                 'filterControls' => ['inHeader' => false],
             ],
         ];
@@ -157,9 +164,9 @@ class TagController extends AbstractCrudGridController
 
         return \sprintf(
             '<a class="btn btn-secondary action-%1$s" href="%2$s" role="button" data-action-name="%1$s">'
-            . '<span class="icon btn-icon">%3$s</span>'
-            . '<span class="btn-label"><span class="action-label" data-gv-i18n="%4$s">%5$s</span></span>'
-            . '</a>',
+                . '<span class="icon btn-icon">%3$s</span>'
+                . '<span class="btn-label"><span class="action-label" data-gv-i18n="%4$s">%5$s</span></span>'
+                . '</a>',
             $esc($name),
             $esc($url),
             $icon,
@@ -224,10 +231,10 @@ class TagController extends AbstractCrudGridController
                 'label' => 'tag.posts',
                 'sortable' => true,
                 'value' => fn(array $data, int $index, DataColumn $column): string =>
-                    $column->renderTemplate('gridview/tag/_posts_popularity.html.twig', [
-                        'count' => (int) ($data['postCount'] ?? 0),
-                        'published' => (int) ($data['publishedCount'] ?? 0),
-                    ]),
+                $column->renderTemplate('gridview/tag/_posts_popularity.html.twig', [
+                    'count' => (int) ($data['postCount'] ?? 0),
+                    'published' => (int) ($data['publishedCount'] ?? 0),
+                ]),
                 'twigFilter' => 'raw',
             ],
             // Auto-wired to the CRUD routes; the buttons/layout come from

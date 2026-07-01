@@ -275,3 +275,17 @@ body.ea-mobile-sidebar-visible::after {
 [data-gridview] .btn-secondary .gv-action-icon {
     color: var(--button-secondary-icon-color);
 }
+
+/* EasyAdmin-style "selection mode" (Tag page).
+   The gridview-selection controller un-hides the in-grid `.gv-bulk-bar` whenever
+   ≥1 row is selected. When that happens, collapse the whole page content-header
+   (title + the filters / "Add Tag" island) so the bulk bar — count + Delete —
+   is the only chrome left, exactly like EA's batch toolbar.
+
+   Pure CSS, no JS: `:has()` reads the bulk bar's `[hidden]` state as the signal.
+   Scoped to the Tag page via its unique `tag-filter` island so other grids keep
+   their content-header while selecting. Both conditions must hold on the shared
+   `.content` ancestor (the common parent of .content-header and the grid). */
+.content:has(.content-header-actions[data-controller~="tag-filter"]):has(.gv-bulk-bar:not([hidden])) .content-header {
+    display: none;
+}
