@@ -22,8 +22,17 @@ function applyTheme(choice) {
     }
 }
 
+// Reflect the current choice in the settings dropdown by marking the matching
+// theme button as active (mirrors the language links' server-rendered is-active).
+function markActive(choice) {
+    document.querySelectorAll('[data-gv-theme-value]').forEach((btn) => {
+        btn.classList.toggle('is-active', btn.dataset.gvThemeValue === choice);
+    });
+}
+
 const saved = localStorage.getItem('gv-theme') || 'light';
 applyTheme(saved);
+document.addEventListener('DOMContentLoaded', () => markActive(saved));
 
 document.addEventListener('click', (e) => {
     const btn = e.target.closest('[data-gv-theme-value]');
@@ -31,4 +40,5 @@ document.addEventListener('click', (e) => {
     const choice = btn.dataset.gvThemeValue;
     localStorage.setItem('gv-theme', choice);
     applyTheme(choice);
+    markActive(choice);
 });
