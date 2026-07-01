@@ -15,6 +15,10 @@
 #}
 {% extends 'gridview/index.html.twig' %}
 
+{# Page-level marker on <body>: scopes the Tag-only "selection mode" CSS (collapse
+   the content-header, leaving just the bulk bar) in gridview-shell.css. #}
+{% block body_class %} page-tag{% endblock %}
+
 {% block content_header_actions %}
     {% set _crud = gridview.options.crud|default({}) %}
     {# The name filter field is built on the SearchForm even though its per-column

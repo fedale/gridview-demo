@@ -34,7 +34,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
     {{ importmap('gridview-page') }}
 </head>
-<body class="ea" data-ea-default-color-scheme="light" data-turbo="false">
+<body class="ea{% block body_class %}{% endblock %}" data-ea-default-color-scheme="light" data-turbo="false">
     {# Apply the EA scheme class/attribute on <body> before content paints, so the
        dark --body-bg is in effect from the first frame (see the <head> snippet). #}
     <script>(function(){var e=window.__gvTheme||'light';document.body.setAttribute('data-bs-theme',e);document.body.classList.add(e==='dark'?'ea-dark-scheme':'ea-light-scheme');})();</script>
@@ -113,15 +113,15 @@
                             <i class="fas fa-gear"></i>
                         </button>
                         <ul class="gv-dropdown-menu">
-                            <li class="gv-dropdown-header">Theme</li>
-                            <li><button type="button" class="gv-dropdown-item" data-gv-theme-value="light"><i class="fas fa-sun fa-fw"></i> Light</button></li>
-                            <li><button type="button" class="gv-dropdown-item" data-gv-theme-value="dark"><i class="fas fa-moon fa-fw"></i> Dark</button></li>
-                            <li><button type="button" class="gv-dropdown-item" data-gv-theme-value="auto"><i class="fas fa-circle-half-stroke fa-fw"></i> Auto</button></li>
-                            <li><hr></li>
                             <li class="gv-dropdown-header">Language</li>
                             {% for loc in ['en', 'es', 'fr'] %}
                                 <li><a class="gv-dropdown-item{{ app.request.locale == loc ? ' is-active' : '' }}" href="?_locale={{ loc }}">{{ loc|upper }}</a></li>
                             {% endfor %}
+                            <li><hr></li>
+                            <li class="gv-dropdown-header">Theme</li>
+                            <li><button type="button" class="gv-dropdown-item" data-gv-theme-value="light"><i class="fas fa-sun fa-fw"></i> Light</button></li>
+                            <li><button type="button" class="gv-dropdown-item" data-gv-theme-value="dark"><i class="fas fa-moon fa-fw"></i> Dark</button></li>
+                            <li><button type="button" class="gv-dropdown-item" data-gv-theme-value="auto"><i class="fas fa-circle-half-stroke fa-fw"></i> Auto</button></li>
                         </ul>
                     </div>
                 </div>
