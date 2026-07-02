@@ -48,15 +48,17 @@ class CategoryController extends AbstractCrudGridController
     protected function dataConfig(): array
     {
         return [
-            'models' => Category::class,
+            'model' => Category::class,
             'pagination' => ['defaultPageSize' => 20],
             'sort' => [
-                'id' => ['asc' => ['c.id'], 'desc' => ['c.id']],
-                'name' => ['asc' => ['c.name'], 'desc' => ['c.name']],
-                'position' => ['asc' => ['c.position'], 'desc' => ['c.position'], 'default' => 'asc'],
-                'postCount' => ['asc' => ['postCount'], 'desc' => ['postCount']],
+                'map' => [
+                    'id' => ['asc' => ['c.id'], 'desc' => ['c.id']],
+                    'name' => ['asc' => ['c.name'], 'desc' => ['c.name']],
+                    'position' => ['asc' => ['c.position'], 'desc' => ['c.position'], 'default' => 'asc'],
+                    'postCount' => ['asc' => ['postCount'], 'desc' => ['postCount']],
+                ],
+                'default' => ['position' => 'asc'],
             ],
-            'defaultSort' => ['position' => 'asc'],
         ];
     }
 

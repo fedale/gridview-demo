@@ -178,16 +178,17 @@ class TagController extends AbstractCrudGridController
     protected function dataConfig(): array
     {
         return [
-            'models' => Tag::class,
+            'model' => Tag::class,
             'pagination' => ['defaultPageSize' => 20],
             'sort' => [
-                'id' => ['asc' => ['t.id'], 'desc' => ['t.id'], 'default' => 'desc'],
-                'name' => ['asc' => ['t.name'], 'desc' => ['t.name'], 'default' => 'asc'],
-                'postCount' => ['asc' => ['postCount'], 'desc' => ['postCount']],
+                'map' => [
+                    'id' => ['asc' => ['t.id'], 'desc' => ['t.id'], 'default' => 'desc'],
+                    'name' => ['asc' => ['t.name'], 'desc' => ['t.name'], 'default' => 'asc'],
+                    'postCount' => ['asc' => ['postCount'], 'desc' => ['postCount']],
+                ],
+                //'multiSort' => true,
+                'default' => ['name' => 'asc'],
             ],
-            //'enableMultiSort' => true,
-            'defaultSort' => ['name' => 'asc'],
-
         ];
     }
 
