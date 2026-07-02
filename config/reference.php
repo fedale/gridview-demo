@@ -1533,7 +1533,10 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         options?: array{
  *             caption?: scalar|Param|null, // Default: null
  *             title?: scalar|Param|null, // Default: null
- *             renderer?: scalar|Param|null, // Default: "table"
+ *             renderer?: array{
+ *                 default?: scalar|Param|null, // Default: "table"
+ *                 map?: array<string, mixed>,
+ *             },
  *             emptyText?: scalar|Param|null, // Default: "No records found"
  *             showThead?: bool|Param, // Default: true
  *             showTfoot?: bool|Param, // Default: true
