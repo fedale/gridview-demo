@@ -1,0 +1,33 @@
+{# Custom CardView item for the Category grid, wired via
+   CategoryController: options.card.template. Demonstrates the item-template hook:
+   a coloured header (background from the row's `color` field) with the name as
+   title and the actions menu top-right, then a compact body reusing the column
+   pipeline via the shared _cell.html.twig partial.
+
+   Context: gridview, row, rowIndex, columns (+ models, pagination, form). #}
+{% set cardAttr = gridview.regionAttr('row')|merge(row.attr ?? {}) %}
+{% set cardAttr = cardAttr|merge({'class': ('gv-card category-card ' ~ cardAttr.class|default(''))|trim}) %}
+{% set accent = row.data.color|default('#6b7280') %}
+<article {{ cardAttr|options }} style="--card-accent: {{ accent }};">
+    <header class="category-card__header" style="background: {{ accent }};">
+        <h3 class="category-card__title">{{ row.data.name }}</h3>
+        <div class="category-card__actions">
+            {% for column in gridview.indexColumns|filter(c => c.kind == 'action') %}
+                {% include '@FedaleGridview/gridview/sections/dataview/_cell.html.twig' %}
+            {% endfor %}
+        </div>
+    </header>
+
+    <div class="gv-card__body">
+        {% if row.data.description %}
+            <p class="category-card__desc">{{ row.data.description|striptags }}</p>
+        {% endif %}
+        <div class="category-card__meta">
+            {# reuse the postCount column's `value` closure (the stats markup) #}
+            {% for column in gridview.indexColumns|filter(c => c.attribute == 'postCount') %}
+                {% include '@FedaleGridview/gridview/sections/dataview/_cell.html.twig' %}
+            {% endfor %}
+            <span class="category-card__pos">#{{ row.data.position }}</span>
+        </div>
+    </div>
+</article>

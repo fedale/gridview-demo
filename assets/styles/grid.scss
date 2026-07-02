@@ -44,3 +44,224 @@
         .action-icon svg { width: 14px; height: 14px; }
     }
 }
+
+// ── Custom CardView item (Category grid) ─────────────────────────
+// Styles the category_card.html.twig item wired via CategoryController's
+// options.card.template: an edge-to-edge coloured header (background from the
+// row `color`) with the name as title and the actions menu top-right.
+[data-gridview] .category-card {
+    padding: 0;
+    overflow: hidden;
+}
+
+[data-gridview] .category-card__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .5rem;
+    padding: .6rem .9rem;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, .25);
+}
+
+[data-gridview] .category-card__title {
+    margin: 0;
+    font-size: 1.05rem;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+[data-gridview] .category-card__actions {
+    flex: 0 0 auto;
+}
+
+[data-gridview] .category-card .gv-card__body {
+    padding: .9rem;
+}
+
+[data-gridview] .category-card__desc {
+    margin: 0 0 .6rem;
+    color: var(--gv-color-text-muted);
+    font-size: .875rem;
+}
+
+[data-gridview] .category-card__meta {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    flex-wrap: wrap;
+}
+
+[data-gridview] .category-card__pos {
+    color: var(--gv-color-text-muted);
+    font-variant-numeric: tabular-nums;
+}
+
+// ── Custom ListView item (Category grid) ─────────────────────────
+// Styles category_list.html.twig (options.list.template): a card-like row with an
+// accent bar, ID badge, colour/position, a posts pill and action buttons. Uses the
+// --gv-* tokens so it adapts to light/dark. When the list holds these items it
+// lays them out as a responsive grid (nicer than full-width rows).
+[data-gridview] .gv-list:has(.category-li) {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
+    gap: 1rem;
+}
+
+[data-gridview] .category-li {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 0;
+    overflow: hidden;
+
+    &:hover { background: var(--gv-card-bg); }   // keep card surface, no row hover
+
+    > * { padding: .7rem .9rem; }
+    > * + * { border-top: 1px solid var(--gv-card-border); }
+}
+
+[data-gridview] .category-li__head {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+}
+
+[data-gridview] .category-li__bar {
+    flex: 0 0 4px;
+    align-self: stretch;
+    min-height: 2.2rem;
+    border-radius: 2px;
+}
+
+[data-gridview] .category-li__titles {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+[data-gridview] .category-li__title {
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--gv-color-text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+[data-gridview] .category-li__subtitle {
+    font-size: .8rem;
+    color: var(--gv-color-text-muted);
+}
+
+[data-gridview] .category-li__id {
+    margin-left: auto;
+    flex: 0 0 auto;
+    font-size: .72rem;
+    color: var(--gv-color-text-muted);
+    background: var(--gv-color-bg-subtle);
+    border: 1px solid var(--gv-card-border);
+    border-radius: 999px;
+    padding: .12rem .55rem;
+}
+
+[data-gridview] .category-li__row {
+    display: flex;
+    gap: 2rem;
+}
+
+[data-gridview] .category-li__field {
+    display: flex;
+    flex-direction: column;
+    gap: .25rem;
+    min-width: 0;
+}
+
+[data-gridview] .category-li__label {
+    font-size: .68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: var(--gv-color-text-muted);
+}
+
+[data-gridview] .category-li__value {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    color: var(--gv-color-text);
+
+    &--strong { font-weight: 700; }
+}
+
+[data-gridview] .category-li__swatch {
+    width: 1rem;
+    height: 1rem;
+    border-radius: 3px;
+    border: 1px solid var(--gv-card-border);
+}
+
+[data-gridview] .category-li__stats {
+    align-items: center;
+    justify-content: space-between;
+}
+
+[data-gridview] .category-li__count {
+    color: var(--gv-color-text-muted);
+
+    strong {
+        font-size: 1.5rem;
+        color: var(--gv-color-text);
+        margin-right: .3rem;
+    }
+}
+
+[data-gridview] .category-li__pill {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    background: rgba(34, 197, 94, .15);
+    color: #16a34a;
+    border-radius: 999px;
+    padding: .2rem .6rem;
+    font-size: .8rem;
+    font-weight: 600;
+
+    &::before {
+        content: "";
+        width: .45rem;
+        height: .45rem;
+        border-radius: 50%;
+        background: currentColor;
+    }
+}
+
+[data-gridview] .category-li__actions {
+    display: flex;
+    gap: .6rem;
+}
+
+[data-gridview] .category-li__btn {
+    flex: 1;
+    text-align: center;
+    padding: .5rem .75rem;
+    border-radius: var(--gv-btn-radius);
+    background: var(--gv-btn-bg);
+    color: var(--gv-btn-color);
+    border: 1px solid var(--gv-btn-border);
+    text-decoration: none;
+    font-weight: 600;
+    transition: background var(--gv-transition);
+
+    &:hover { background: var(--gv-btn-bg-hover); }
+
+    &--primary {
+        background: var(--gv-btn-primary-bg);
+        color: var(--gv-btn-primary-color);
+        border-color: var(--gv-btn-primary-bg);
+
+        &:hover { background: var(--gv-btn-primary-hover); }
+    }
+}

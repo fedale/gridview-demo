@@ -1,0 +1,46 @@
+{# Custom ListView item for the Category grid, wired via CategoryController:
+   options.list.template. A rich, card-like list row: an accent bar + name/subtitle
+   with an ID badge, a colour/position row, a posts-count row with a "published"
+   pill, and an actions footer (Edit opens the CRUD modal, View posts jumps to the
+   filtered post index).
+
+   Context: gridview, row, rowIndex, columns (+ models, pagination, form). #}
+{% set liAttr = gridview.regionAttr('row')|merge(row.attr ?? {}) %}
+{% set liAttr = liAttr|merge({'class': ('gv-list-item category-li ' ~ liAttr.class|default(''))|trim}) %}
+{% set accent = row.data.color|default('#6b7280') %}
+{% set editUrl = path('gridview_category_update', {id: row.data.id}) %}
+<li {{ liAttr|options }} style="--card-accent: {{ accent }};">
+    <div class="category-li__head">
+        <span class="category-li__bar" style="background: {{ accent }};"></span>
+        <div class="category-li__titles">
+            <span class="category-li__title">{{ row.data.name }}</span>
+            <span class="category-li__subtitle">Categoria</span>
+        </div>
+        <span class="category-li__id">ID {{ row.data.id }}</span>
+    </div>
+
+    <div class="category-li__row">
+        <div class="category-li__field">
+            <span class="category-li__label">Colore</span>
+            <span class="category-li__value">
+                <span class="category-li__swatch" style="background: {{ accent }};"></span>{{ row.data.color }}
+            </span>
+        </div>
+        <div class="category-li__field">
+            <span class="category-li__label">Posizione</span>
+            <span class="category-li__value category-li__value--strong">#{{ row.data.position }}</span>
+        </div>
+    </div>
+
+    <div class="category-li__row category-li__stats">
+        <span class="category-li__count"><strong>{{ row.data.postCount }}</strong> articoli</span>
+        <span class="category-li__pill">{{ row.data.publishedCount }} pubblicati</span>
+    </div>
+
+    <div class="category-li__actions">
+        <a class="category-li__btn" href="{{ editUrl }}"
+           data-action="gridview-crud#open" data-gridview-crud-url-param="{{ editUrl }}">Modifica</a>
+        <a class="category-li__btn category-li__btn--primary"
+           href="{{ path('admin_post_index', {_locale: app.request.locale, filters: {category: {value: row.data.id, comparison: '='}}}) }}">Vedi articoli</a>
+    </div>
+</li>

@@ -46,7 +46,12 @@ class CategoryController extends AbstractCrudGridController
                 // card/list views the header-less {sortBar}/{filterBar} take over.
                 'renderer'  => 'table',
                 'renderers' => ['table', 'card', 'list'],
-                'card'      => ['min' => '18rem', 'titleField' => 'name'],
+                // Custom card item template: coloured header (from the row `color`),
+                // name as title, actions top-right. Demonstrates options.card.template.
+                'card'      => ['min' => '18rem', 'template' => 'gridview/category_card.html.twig'],
+                // Custom list item template: rich card-like row (accent bar, ID
+                // badge, colour/position, posts-count pill, action buttons).
+                'list'      => ['template' => 'gridview/category_list.html.twig'],
             ],
         ];
     }
