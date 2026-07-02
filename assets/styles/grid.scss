@@ -100,18 +100,13 @@
 }
 
 // ── Custom ListView item (Category grid) ─────────────────────────
-// Styles category_list.html.twig (options.list.template): a card-like row with an
-// accent bar, ID badge, colour/position, a posts pill and action buttons. Uses the
-// --gv-* tokens so it adapts to light/dark. When the list holds these items it
-// lays them out as a responsive grid (nicer than full-width rows).
-[data-gridview] .gv-list:has(.category-li) {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
-    gap: 1rem;
-}
-
+// Styles category_list.html.twig (options.list.template): a full-width list row
+// with an accent bar, name + ID badge, colour/position, a posts pill and action
+// buttons — sections laid out horizontally, separated by vertical dividers. Uses
+// the --gv-* tokens so it adapts to light/dark. The list keeps its default
+// vertical stack, so every row spans the full container width.
 [data-gridview] .category-li {
-    flex-direction: column;
+    flex-direction: row;
     align-items: stretch;
     gap: 0;
     padding: 0;
@@ -119,13 +114,24 @@
 
     &:hover { background: var(--gv-card-bg); }   // keep card surface, no row hover
 
-    > * { padding: .7rem .9rem; }
-    > * + * { border-top: 1px solid var(--gv-card-border); }
+    > * { padding: .65rem 1rem; display: flex; align-items: center; }
+    > * + * { border-left: 1px solid var(--gv-card-border); }
+}
+
+// Narrow viewports: stack the sections vertically so nothing overflows.
+@media (max-width: 720px) {
+    [data-gridview] .category-li {
+        flex-direction: column;
+        align-items: stretch;
+
+        > * + * { border-left: 0; border-top: 1px solid var(--gv-card-border); }
+    }
+    [data-gridview] .category-li__actions { margin-left: 0; }
 }
 
 [data-gridview] .category-li__head {
-    display: flex;
-    align-items: center;
+    flex: 1 1 auto;   // title block grows; the rest sits to its right
+    min-width: 0;
     gap: .6rem;
 }
 
@@ -205,7 +211,7 @@
 
 [data-gridview] .category-li__stats {
     align-items: center;
-    justify-content: space-between;
+    gap: 1rem;
 }
 
 [data-gridview] .category-li__count {
@@ -239,12 +245,12 @@
 }
 
 [data-gridview] .category-li__actions {
-    display: flex;
+    margin-left: auto;   // push the buttons to the far right of the row
     gap: .6rem;
 }
 
 [data-gridview] .category-li__btn {
-    flex: 1;
+    flex: 0 0 auto;
     text-align: center;
     padding: .5rem .75rem;
     border-radius: var(--gv-btn-radius);
