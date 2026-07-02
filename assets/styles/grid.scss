@@ -100,51 +100,31 @@
 }
 
 // ── Custom ListView item (Category grid) ─────────────────────────
-// Styles category_list.html.twig (options.list.template): a full-width list row
-// with an accent bar, name + ID badge, colour/position, a posts pill and action
-// buttons — sections laid out horizontally, separated by vertical dividers. Uses
-// the --gv-* tokens so it adapts to light/dark. The list keeps its default
-// vertical stack, so every row spans the full container width.
+// Styles category_list.html.twig (options.list.template): a clean full-width list
+// row — no table-like dividers, no decorative colour. Left: name + ID badge,
+// subtitle, description, then a meta line (position / posts / published). Right:
+// the action buttons. Uses the --gv-* tokens so it adapts to light/dark.
 [data-gridview] .category-li {
     flex-direction: row;
-    align-items: stretch;
-    gap: 0;
-    padding: 0;
-    overflow: hidden;
+    align-items: center;
+    gap: 1rem;
+    padding: .8rem 1rem;
 
-    &:hover { background: var(--gv-card-bg); }   // keep card surface, no row hover
-
-    > * { padding: .65rem 1rem; display: flex; align-items: center; }
-    > * + * { border-left: 1px solid var(--gv-card-border); }
+    &:hover { background: var(--gv-tr-hover-bg); }
 }
 
-// Narrow viewports: stack the sections vertically so nothing overflows.
-@media (max-width: 720px) {
-    [data-gridview] .category-li {
-        flex-direction: column;
-        align-items: stretch;
-
-        > * + * { border-left: 0; border-top: 1px solid var(--gv-card-border); }
-    }
-    [data-gridview] .category-li__actions { margin-left: 0; }
+[data-gridview] .category-li__main {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: .25rem;
 }
 
 [data-gridview] .category-li__head {
-    flex: 1 1 auto;   // title block grows; the rest sits to its right
-    min-width: 0;
-    gap: .6rem;
-}
-
-[data-gridview] .category-li__bar {
-    flex: 0 0 4px;
-    align-self: stretch;
-    min-height: 2.2rem;
-    border-radius: 2px;
-}
-
-[data-gridview] .category-li__titles {
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    gap: .5rem;
     min-width: 0;
 }
 
@@ -157,13 +137,7 @@
     white-space: nowrap;
 }
 
-[data-gridview] .category-li__subtitle {
-    font-size: .8rem;
-    color: var(--gv-color-text-muted);
-}
-
 [data-gridview] .category-li__id {
-    margin-left: auto;
     flex: 0 0 auto;
     font-size: .72rem;
     color: var(--gv-color-text-muted);
@@ -173,86 +147,51 @@
     padding: .12rem .55rem;
 }
 
-[data-gridview] .category-li__row {
-    display: flex;
-    gap: 2rem;
-}
-
-[data-gridview] .category-li__field {
-    display: flex;
-    flex-direction: column;
-    gap: .25rem;
-    min-width: 0;
-}
-
-[data-gridview] .category-li__label {
-    font-size: .68rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: .05em;
-    color: var(--gv-color-text-muted);
-}
-
-[data-gridview] .category-li__value {
-    display: inline-flex;
-    align-items: center;
-    gap: .4rem;
-    color: var(--gv-color-text);
-
-    &--strong { font-weight: 700; }
-}
-
-[data-gridview] .category-li__swatch {
-    width: 1rem;
-    height: 1rem;
-    border-radius: 3px;
-    border: 1px solid var(--gv-card-border);
-}
-
-[data-gridview] .category-li__stats {
-    align-items: center;
-    gap: 1rem;
-}
-
-[data-gridview] .category-li__count {
-    color: var(--gv-color-text-muted);
-
-    strong {
-        font-size: 1.5rem;
-        color: var(--gv-color-text);
-        margin-right: .3rem;
-    }
-}
-
-[data-gridview] .category-li__pill {
-    display: inline-flex;
-    align-items: center;
-    gap: .35rem;
-    background: rgba(34, 197, 94, .15);
-    color: #16a34a;
-    border-radius: 999px;
-    padding: .2rem .6rem;
+[data-gridview] .category-li__subtitle {
     font-size: .8rem;
-    font-weight: 600;
+    color: var(--gv-color-text-muted);
+}
 
-    &::before {
-        content: "";
-        width: .45rem;
-        height: .45rem;
-        border-radius: 50%;
-        background: currentColor;
-    }
+[data-gridview] .category-li__desc {
+    margin: .15rem 0 0;
+    color: var(--gv-color-text-muted);
+    font-size: .875rem;
+    // clamp to two lines so a long description doesn't blow up the row height
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+[data-gridview] .category-li__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .3rem 1.1rem;
+    margin-top: .2rem;
+    font-size: .85rem;
+    color: var(--gv-color-text-muted);
+
+    strong { color: var(--gv-color-text); }
+}
+
+[data-gridview] .category-li__published::before {
+    content: "•";
+    margin-right: .35rem;
+    color: var(--gv-color-text-muted);
 }
 
 [data-gridview] .category-li__actions {
-    margin-left: auto;   // push the buttons to the far right of the row
+    flex: 0 0 auto;
+    display: flex;
     gap: .6rem;
+    margin-left: auto;   // keep the buttons on the right
 }
 
 [data-gridview] .category-li__btn {
     flex: 0 0 auto;
     text-align: center;
-    padding: .5rem .75rem;
+    padding: .5rem .85rem;
     border-radius: var(--gv-btn-radius);
     background: var(--gv-btn-bg);
     color: var(--gv-btn-color);
@@ -270,4 +209,13 @@
 
         &:hover { background: var(--gv-btn-primary-hover); }
     }
+}
+
+// Narrow viewports: buttons drop below the content instead of squeezing it.
+@media (max-width: 640px) {
+    [data-gridview] .category-li {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    [data-gridview] .category-li__actions { margin-left: 0; }
 }
