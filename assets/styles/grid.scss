@@ -109,6 +109,8 @@
     align-items: center;
     gap: 1rem;
     padding: .8rem 1rem;
+    // colored left accent border (from the row `color`); flush and full-height
+    border-left: 3px solid var(--card-accent, var(--gv-card-border));
 
     &:hover { background: var(--gv-tr-hover-bg); }
 }

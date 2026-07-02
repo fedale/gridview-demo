@@ -7,7 +7,8 @@
 {% set liAttr = gridview.regionAttr('row')|merge(row.attr ?? {}) %}
 {% set liAttr = liAttr|merge({'class': ('gv-list-item category-li ' ~ liAttr.class|default(''))|trim}) %}
 {% set editUrl = path('gridview_category_update', {id: row.data.id}) %}
-<li {{ liAttr|options }}>
+{% set accent = row.data.color|default('#6b7280') %}
+<li {{ liAttr|options }} style="--card-accent: {{ accent }};">
     <div class="category-li__main">
         <div class="category-li__head">
             <span class="category-li__title">{{ row.data.name }}</span>
