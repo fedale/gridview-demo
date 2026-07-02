@@ -114,7 +114,7 @@
                         </button>
                         <ul class="gv-dropdown-menu">
                             <li class="gv-dropdown-header">Language</li>
-                            {% for loc in ['en', 'es', 'fr'] %}
+                            {% for loc in ['en', 'es', 'fr', 'it'] %}
                                 <li><a class="gv-dropdown-item{{ app.request.locale == loc ? ' is-active' : '' }}" href="?_locale={{ loc }}">{{ loc|upper }}</a></li>
                             {% endfor %}
                             <li><hr></li>

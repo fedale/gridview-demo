@@ -5,11 +5,11 @@ fedale_gridview:
     # Set to 'default' for the agnostic gv-* look, or 'tailwind' for utilities.
     theme: bootstrap5
 
-    # Instant client-side i18n: ship the EN/ES/FR catalogs to the browser. The demo
+    # Instant client-side i18n: ship the EN/ES/FR/IT catalogs to the browser. The demo
     # already exposes a locale in the route ({_locale}), so the in-grid switcher
     # stays off — the host drives the locale.
     i18n:
-        locales: [en, es, fr]
+        locales: [en, es, fr, it]
         default: en
         client_domain: messages
         lang_switcher: true
