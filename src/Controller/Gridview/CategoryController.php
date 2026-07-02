@@ -41,6 +41,12 @@ class CategoryController extends AbstractCrudGridController
                 // (the `name` column opts into the `chip` clear mode below).
                 'layout' => ['header' => '{heading} {toolbar} {filterChips}'],
                 'filterControls' => ['clear' => 'chip'],
+                // Runtime view switch (opt-in): table (default) ⇆ cards ⇆ list.
+                // The {viewSwitcher} appears in the toolbar automatically; on the
+                // card/list views the header-less {sortBar}/{filterBar} take over.
+                'renderer'  => 'table',
+                'renderers' => ['table', 'card', 'list'],
+                'card'      => ['min' => '18rem', 'titleField' => 'name'],
             ],
         ];
     }
