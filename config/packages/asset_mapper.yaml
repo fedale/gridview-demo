@@ -1,12 +1,13 @@
 framework:
     asset_mapper:
-        # The paths to make available to the asset mapper. The gridview bundle's
-        # Stimulus controllers + JS helpers are copied into assets/vendor-gridview/
-        # (see bin/sync-gridview-assets) so they live under the app asset root and
-        # can be imported *relatively* — which is what lets AssetMapper follow their
-        # internal imports and add them to the import map.
+        # The paths to make available to the asset mapper. The gridview bundle
+        # ships its Stimulus controllers under its own assets/ dir and declares
+        # them in assets/package.json (symfony.controllers), so they're picked
+        # up via assets/controllers.json — no manual copy/sync needed.
         paths:
             - assets/
+            - namespace: '@fedale/gridview-bundle'
+              value: vendor/fedale/gridview-bundle/assets
         missing_import_mode: strict
         excluded_patterns:
             - '*/assets/styles/**/_*.scss'

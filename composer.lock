@@ -1368,7 +1368,7 @@
             "dist": {
                 "type": "path",
                 "url": "../gridview-bundle",
-                "reference": "4078d473dd8f30ded0da6cc1affa4d19a2438639"
+                "reference": "7844f347f3fb275c12b9bb5d116403066c642b1b"
             },
             "require": {
                 "php": ">=8.1",
