@@ -17,7 +17,7 @@
 {% for item in menu|filter(i => i.type == 'link' and i.active) %}
     {% set active_label = item.label %}
 {% endfor %}
-{% set form_name = gridview.options.formName|default('myform') %}
+{% set form_name = gridview.options.behavior.formName|default('myform') %}
 {% set search_q = app.request.query.all(form_name)['_q']|default('') %}
 <!DOCTYPE html>
 <html lang="{{ app.request.locale|default('en') }}">

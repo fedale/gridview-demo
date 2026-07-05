@@ -87,21 +87,27 @@ class TagController extends AbstractCrudGridController
                 // "View posts" action, then inline edit and the ROLE_ADMIN delete.
                 // The buttons themselves are wired in defaultActionButtons().
                 'actionLayout' => '{edit} {show} {viewPosts}',
-                // Feeds the content-top search box; the in-grid global search is
-                // gone entirely now that the header region is dropped (below).
-                'globalSearch' => ['name'],
-                // Drop the whole gv-region--header (heading + toolbar): the Add
-                // button lives in the page content-header instead, and this grid
-                // has no other toolbar controls. {dataview} + {footer} remain.
-                // 'layout' => ['shell' => '{dataview} {footer}'],
-                'layout' => ['shell' => '{bulkBar} {dataview} {footer}'],
-                // Bulk URLs are auto-derived by AbstractCrudGridController; this
-                // only whitelists which buttons show. Deep-merged over the auto
-                // crud options, so the URLs/title are preserved. Keep Delete only.
-                'crud' => [
-                    'bulkActions' => ['delete' => true],
+                'behavior' => [
+                    // Feeds the content-top search box; the in-grid global search is
+                    // gone entirely now that the header region is dropped (below).
+                    'globalSearch' => ['name'],
+                    'filterControls' => ['clear' => 'chip'],
                 ],
-                'filterControls' => ['clear' => 'chip'],
+                'display' => [
+                    // Drop the whole gv-region--header (heading + toolbar): the Add
+                    // button lives in the page content-header instead, and this grid
+                    // has no other toolbar controls. {dataview} + {footer} remain.
+                    // 'layout' => ['shell' => '{dataview} {footer}'],
+                    'layout' => ['shell' => '{bulkBar} {dataview} {footer}'],
+                ],
+                'integration' => [
+                    // Bulk URLs are auto-derived by AbstractCrudGridController; this
+                    // only whitelists which buttons show. Deep-merged over the auto
+                    // crud options, so the URLs/title are preserved. Keep Delete only.
+                    'crud' => [
+                        'bulkActions' => ['delete' => true],
+                    ],
+                ],
             ],
         ];
     }

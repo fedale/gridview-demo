@@ -15,11 +15,12 @@ fedale_gridview:
         lang_switcher: true
 
     defaults:
-        options:
+        display:
             emptyText: 'No records found'
-            useTurbo: true
             showThead: true
             showTfoot: true
+        behavior:
+            useTurbo: true
         attributes:
             class: 'table table-striped'
 

@@ -1530,7 +1530,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         cookie_name?: scalar|Param|null, // Default: "gv_locale"
  *     },
  *     defaults?: array{
- *         options?: array{
+ *         display?: array{
  *             caption?: scalar|Param|null, // Default: null
  *             title?: scalar|Param|null, // Default: null
  *             renderer?: array{
@@ -1540,27 +1540,8 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *             emptyText?: scalar|Param|null, // Default: "No records found"
  *             showThead?: bool|Param, // Default: true
  *             showTfoot?: bool|Param, // Default: true
- *             useTurbo?: bool|Param, // Default: true
- *             globalSearch?: list<scalar|Param|null>,
- *             addRoute?: scalar|Param|null, // Default: null
  *             addLabel?: scalar|Param|null, // Default: "Add"
- *             formName?: scalar|Param|null, // Default: "fedaleForm"
- *             maxQueryLength?: int|Param, // Default: 4000
- *             filterControls?: array{
- *                 inHeader?: bool|Param, // Default: true
- *                 inlineClear?: bool|Param, // Default: false
- *                 clear?: mixed, // Default: null
- *             },
- *             pagination?: array{
- *                 mode?: scalar|Param|null, // Default: "numeric"
- *                 pageSelect?: bool|Param, // Default: true
- *                 pageSelectThreshold?: int|Param, // Default: 10
- *                 options?: mixed,
- *             },
- *             realtime?: array{ // Real-time grid updates over Mercure (signal + auto-refresh).
- *                 enabled?: bool|Param, // Default: false
- *                 topicPrefix?: scalar|Param|null, // Default: "gridview/"
- *             },
+ *             crudTemplate?: scalar|Param|null, // Default: null
  *             layout?: array{
  *                 shell?: scalar|Param|null, // Default: null
  *                 header?: scalar|Param|null, // Default: null
@@ -1572,6 +1553,36 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *                 slots?: list<scalar|Param|null>,
  *                 attrs?: list<list<mixed>>,
  *             },
+ *         },
+ *         behavior?: array{
+ *             useTurbo?: bool|Param, // Default: true
+ *             globalSearch?: list<scalar|Param|null>,
+ *             formName?: scalar|Param|null, // Default: "fedaleForm"
+ *             maxQueryLength?: int|Param, // Default: 4000
+ *             crudMode?: scalar|Param|null, // Default: "modal"
+ *             filterControls?: array{
+ *                 inHeader?: bool|Param, // Default: true
+ *                 inlineClear?: bool|Param, // Default: false
+ *                 clear?: mixed, // Default: null
+ *                 autoBar?: mixed, // Default: null
+ *                 choiceControlsThreshold?: int|Param, // Default: 20
+ *             },
+ *             pagination?: array{
+ *                 mode?: scalar|Param|null, // Default: "numeric"
+ *                 pageSelect?: bool|Param, // Default: true
+ *                 pageSelectThreshold?: int|Param, // Default: 10
+ *                 options?: mixed,
+ *             },
+ *             realtime?: array{ // Real-time grid updates over Mercure (signal + auto-refresh).
+ *                 enabled?: bool|Param, // Default: false
+ *                 topicPrefix?: scalar|Param|null, // Default: "gridview/"
+ *             },
+ *             reorderColumns?: bool|Param, // Default: false
+ *             responsive?: bool|Param, // Default: false
+ *             restriction?: mixed, // Default: false
+ *         },
+ *         integration?: array{
+ *             addRoute?: scalar|Param|null, // Default: null
  *         },
  *         attributes?: array{
  *             class?: scalar|Param|null, // Default: null
@@ -1586,7 +1597,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         },
  *     },
  *     gridviews?: array<string, array{ // Default: []
- *         options?: array{
+ *         display?: array{
  *             caption?: scalar|Param|null,
  *             title?: scalar|Param|null,
  *             renderer?: scalar|Param|null,
@@ -1594,25 +1605,8 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *             emptyText?: scalar|Param|null,
  *             showThead?: bool|Param,
  *             showTfoot?: bool|Param,
- *             useTurbo?: bool|Param,
- *             globalSearch?: list<scalar|Param|null>,
- *             addRoute?: scalar|Param|null,
  *             addLabel?: scalar|Param|null,
- *             maxQueryLength?: int|Param,
- *             filterControls?: array{
- *                 inHeader?: bool|Param,
- *                 inlineClear?: bool|Param,
- *             },
- *             pagination?: array{
- *                 mode?: scalar|Param|null,
- *                 pageSelect?: bool|Param,
- *                 pageSelectThreshold?: int|Param,
- *                 options?: mixed,
- *             },
- *             realtime?: array{
- *                 enabled?: bool|Param,
- *                 topicPrefix?: scalar|Param|null,
- *             },
+ *             crudTemplate?: scalar|Param|null,
  *             layout?: array{
  *                 shell?: scalar|Param|null,
  *                 header?: scalar|Param|null,
@@ -1624,6 +1618,36 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *                 slots?: list<scalar|Param|null>,
  *                 attrs?: list<list<mixed>>,
  *             },
+ *         },
+ *         behavior?: array{
+ *             useTurbo?: bool|Param,
+ *             globalSearch?: list<scalar|Param|null>,
+ *             formName?: scalar|Param|null,
+ *             maxQueryLength?: int|Param,
+ *             crudMode?: scalar|Param|null,
+ *             filterControls?: array{
+ *                 inHeader?: bool|Param,
+ *                 inlineClear?: bool|Param,
+ *                 clear?: mixed,
+ *                 autoBar?: mixed,
+ *                 choiceControlsThreshold?: int|Param,
+ *             },
+ *             pagination?: array{
+ *                 mode?: scalar|Param|null,
+ *                 pageSelect?: bool|Param,
+ *                 pageSelectThreshold?: int|Param,
+ *                 options?: mixed,
+ *             },
+ *             realtime?: array{
+ *                 enabled?: bool|Param,
+ *                 topicPrefix?: scalar|Param|null,
+ *             },
+ *             reorderColumns?: bool|Param,
+ *             responsive?: bool|Param,
+ *             restriction?: mixed,
+ *         },
+ *         integration?: array{
+ *             addRoute?: scalar|Param|null,
  *         },
  *         attributes?: array{
  *             class?: scalar|Param|null, // Default: null

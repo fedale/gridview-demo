@@ -36,26 +36,30 @@ class CategoryController extends AbstractCrudGridController
             'export' => ['filename' => 'categories'],
             'template' => ['index' => 'gridview/index.html.twig'],
             'options' => [
-                'globalSearch' => ['name'],
-                // Render active-filter chips on their own row under the toolbar
-                // (the `name` column opts into the `chip` clear mode below).
-                'layout' => ['header' => '{heading} {toolbar} {filterChips}'],
-                'filterControls' => ['clear' => 'chip'],
-                // Runtime view switch (opt-in): table (default) ⇆ cards ⇆ list.
-                // The {viewSwitcher} appears in the toolbar automatically; on the
-                // card/list views the header-less {sortBar}/{filterBar} take over.
-                // The switcher offers exactly the `map` keys, in this order.
-                'renderer' => [
-                    'default' => 'table',
-                    'map' => [
-                        'table' => [],
-                        // Custom card item template: coloured header (from the row
-                        // `color`), name as title, actions top-right. Demonstrates
-                        // renderer.map.card.template.
-                        'card' => ['min' => '18rem', 'template' => 'gridview/category_card.html.twig'],
-                        // Custom list item template: rich card-like row (accent bar,
-                        // ID badge, colour/position, posts-count pill, action buttons).
-                        'list' => ['template' => 'gridview/category_list.html.twig'],
+                'behavior' => [
+                    'globalSearch' => ['name'],
+                    'filterControls' => ['clear' => 'chip'],
+                ],
+                'display' => [
+                    // Render active-filter chips on their own row under the toolbar
+                    // (the `name` column opts into the `chip` clear mode below).
+                    'layout' => ['header' => '{heading} {toolbar} {filterChips}'],
+                    // Runtime view switch (opt-in): table (default) ⇆ cards ⇆ list.
+                    // The {viewSwitcher} appears in the toolbar automatically; on the
+                    // card/list views the header-less {sortBar}/{filterBar} take over.
+                    // The switcher offers exactly the `map` keys, in this order.
+                    'renderer' => [
+                        'default' => 'table',
+                        'map' => [
+                            'table' => [],
+                            // Custom card item template: coloured header (from the row
+                            // `color`), name as title, actions top-right. Demonstrates
+                            // renderer.map.card.template.
+                            'card' => ['min' => '18rem', 'template' => 'gridview/category_card.html.twig'],
+                            // Custom list item template: rich card-like row (accent bar,
+                            // ID badge, colour/position, posts-count pill, action buttons).
+                            'list' => ['template' => 'gridview/category_list.html.twig'],
+                        ],
                     ],
                 ],
             ],

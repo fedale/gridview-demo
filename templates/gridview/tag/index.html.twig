@@ -20,7 +20,7 @@
 {% block body_class %} page-tag{% endblock %}
 
 {% block content_header_actions %}
-    {% set _crud = gridview.options.crud|default({}) %}
+    {% set _crud = gridview.options.integration.crud|default({}) %}
     {# The name filter field is built on the SearchForm even though its per-column
        header input is suppressed (TagController sets the column's filterBar=true);
        we surface it here in a custom modal instead. #}
@@ -60,7 +60,7 @@
         {% endif %}
 
         {% if _crud.addUrl is defined and _crud.addUrl is not empty %}
-            {% set _addLabel = gridview.options.addLabel|default('Add') %}
+            {% set _addLabel = gridview.options.display.addLabel|default('Add') %}
             {# Mirror the bundle addButton label resolution: app-owned key via the
                client domain, otherwise the translatable system fallback. #}
             {% set _addText = gv_client_label(_addLabel) ? gv_client_text(_addLabel) : _addLabel|trans({}, 'GridviewBundle') %}
