@@ -47,6 +47,10 @@
                 "enabled": true,
                 "fetch": "lazy"
             },
+            "grouping": {
+                "enabled": true,
+                "fetch": "lazy"
+            },
             "filter": {
                 "enabled": true,
                 "fetch": "lazy"
