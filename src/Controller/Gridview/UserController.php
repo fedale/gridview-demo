@@ -27,7 +27,7 @@ class UserController extends AbstractCrudGridController
                 'behavior' => [
                     'grouping' => [
                         'enabled' => true,
-                        'mode' => 'eager',
+                        'mode' => 'lazy',
                         'relation' => 'posts',
                         'label' => 'Posts',
                         'columns' => [
