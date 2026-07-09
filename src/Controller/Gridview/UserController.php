@@ -17,11 +17,7 @@ class UserController extends AbstractCrudGridController
     protected function viewConfig(): array
     {
         return [
-            // The default 'gridview/with_sidebar.html.twig' expects a template
-            // supplied by the host app; fall back to the bundle's own bare
-            // layout so this controller renders out of the box. Swap this for
-            // an app template once one exists.
-            'template' => ['index' => '@FedaleGridview/gridview/index.html.twig'],
+            'template' => ['index' => 'gridview/index.html.twig'],
             // Group each user's posts as expandable child rows.
             'options' => [
                 'behavior' => [
