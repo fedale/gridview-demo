@@ -1584,6 +1584,11 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         integration?: array{
  *             addRoute?: scalar|Param|null, // Default: null
  *         },
+ *         pagination?: array{
+ *             defaultPageSize?: int|Param, // Default: 20
+ *             pageSizeOptions?: list<int|Param>,
+ *             maxPageSize?: int|Param, // Default: 50
+ *         },
  *         attributes?: array{
  *             class?: scalar|Param|null, // Default: null
  *             row?: list<mixed>,
@@ -1648,6 +1653,11 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         },
  *         integration?: array{
  *             addRoute?: scalar|Param|null,
+ *         },
+ *         pagination?: array{
+ *             defaultPageSize?: int|Param,
+ *             pageSizeOptions?: list<int|Param>,
+ *             maxPageSize?: int|Param,
  *         },
  *         attributes?: array{
  *             class?: scalar|Param|null, // Default: null
