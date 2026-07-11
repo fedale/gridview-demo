@@ -70,7 +70,7 @@ class CommentController extends AbstractCrudGridController
                 'attribute' => 'status',
                 'label' => 'Status',
                 'sortable' => true,
-                'filter' => ['type' => 'choice', 'options' => ['choices' => \App\Enum\CommentStatus::filterChoices()]],
+                'filter' => ['type' => 'choice', 'options' => ['choices' => \App\Enum\CommentStatus::filterChoices(), 'required' => false, 'placeholder' => 'any.status']],
                 'control' => ['type' => 'enum', 'required' => true, 'options' => ['class' => 'App\\Enum\\CommentStatus']],
             ],
             [
@@ -78,7 +78,7 @@ class CommentController extends AbstractCrudGridController
                 'label' => 'Author',
                 'filter' => ['type' => 'relation'],
                 'control' => ['type' => 'relation', 'required' => false, 'options' => ['class' => \App\Entity\User::class]],
-                'value' => fn (array $data): mixed => $data['author']['id'] ?? null,
+                'value' => fn(array $data): mixed => $data['author']['id'] ?? null,
             ],
             [
                 'attribute' => 'post',
@@ -89,7 +89,7 @@ class CommentController extends AbstractCrudGridController
                     'required' => false,
                     'options' => ['class' => \App\Entity\Post::class, 'choice_label' => 'title'],
                 ],
-                'value' => fn (array $data): mixed => $data['post']['title'] ?? $data['post']['id'] ?? null,
+                'value' => fn(array $data): mixed => $data['post']['title'] ?? $data['post']['id'] ?? null,
             ],
             ['type' => 'action', 'label' => false],
         ];
