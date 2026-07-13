@@ -18,6 +18,15 @@ class CommentController extends AbstractCrudGridController
     {
         return [
             'template' => ['index' => 'gridview/index.html.twig'],
+            'options' => [
+                'display' => [
+                    'layout' => [
+                        'header' => '{heading}',
+                        'footer' => '{pagination} {resultsSummary} {pageSize}',
+                    ]
+                ]
+
+            ]
         ];
     }
 
