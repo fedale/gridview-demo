@@ -61,7 +61,7 @@ class PostController extends AbstractCrudGridController
             'pagination' => ['defaultPageSize' => 20],
             'searchFields' => [
                 'id' => ['number', 'e.id'],
-                'title' => ['text', 'e.title'],
+                'title' => ['text', 'e.title', ['trim' => false]],
                 'status' => ['choice', 'e.status'],
                 'isFeatured' => ['boolean', 'e.isFeatured'],
                 'author' => ['relation', 'e.author'],
@@ -95,7 +95,7 @@ class PostController extends AbstractCrudGridController
                 'attribute' => 'title',
                 'label' => 'Title',
                 'sortable' => true,
-                'filter' => ['type' => 'text'],
+                'filter' => ['type' => 'text', 'options' => ['trim' => false]],
                 'control' => ['type' => 'text', 'required' => true],
             ],
             [
