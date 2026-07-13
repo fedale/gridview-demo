@@ -17,7 +17,6 @@ class UserController extends AbstractCrudGridController
     protected function viewConfig(): array
     {
         return [
-            'template' => ['index' => 'gridview/index.html.twig'],
             // Group each user's posts as expandable child rows.
             'options' => [
                 'behavior' => [

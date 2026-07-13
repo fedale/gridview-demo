@@ -34,7 +34,6 @@ class CategoryController extends AbstractCrudGridController
             // export filename are overridden.
             'labels' => ['add' => 'New category'],
             'export' => ['filename' => 'categories'],
-            'template' => ['index' => 'gridview/index.html.twig'],
             'options' => [
                 'behavior' => [
                     'globalSearch' => ['name'],

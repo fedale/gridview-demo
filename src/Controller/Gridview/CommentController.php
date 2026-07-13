@@ -17,7 +17,6 @@ class CommentController extends AbstractCrudGridController
     protected function viewConfig(): array
     {
         return [
-            'template' => ['index' => 'gridview/index.html.twig'],
             'options' => [
                 'display' => [
                     'layout' => [

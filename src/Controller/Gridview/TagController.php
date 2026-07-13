@@ -80,7 +80,7 @@ class TagController extends AbstractCrudGridController
                 // The "Add Tag" link is a direct (non-XHR) navigation, so the CRUD
                 // form is served as a full page. Wrap it in the demo shell (sidebar +
                 // main-content) instead of the bundle's bare crud/page.html.twig.
-                'page' => 'gridview/crud_page.html.twig',
+                // 'page' => 'gridview/crud_page.html.twig',
             ],
             'options' => [
                 // Action layout mirroring EasyAdmin's TagCrudController: the custom
@@ -94,11 +94,14 @@ class TagController extends AbstractCrudGridController
                     'filterControls' => ['clear' => 'chip'],
                 ],
                 'display' => [
-                    // Drop the whole gv-region--header (heading + toolbar): the Add
-                    // button lives in the page content-header instead, and this grid
-                    // has no other toolbar controls. {dataview} + {footer} remain.
-                    // 'layout' => ['shell' => '{dataview} {footer}'],
-                    'layout' => ['shell' => '{bulkBar} {dataview} {footer}'],
+                    // The title and the page-level actions (filter + Add) render
+                    // together in the content-header row (see gridview/tag/index.html.twig).
+                    // The grid keeps only {bulkBar} in its header, so that region stays
+                    // empty until rows are selected and the title isn't duplicated.
+                    'layout' => [
+                        'shell'  => '{header} {dataview} {footer}',
+                        'header' => '{bulkBar}',
+                    ],
                 ],
                 'integration' => [
                     // Bulk URLs are auto-derived by AbstractCrudGridController; this
@@ -170,9 +173,9 @@ class TagController extends AbstractCrudGridController
 
         return \sprintf(
             '<a class="btn btn-secondary action-%1$s" href="%2$s" role="button" data-action-name="%1$s">'
-            . '<span class="icon btn-icon">%3$s</span>'
-            . '<span class="btn-label"><span class="action-label" data-gv-i18n="%4$s">%5$s</span></span>'
-            . '</a>',
+                . '<span class="icon btn-icon">%3$s</span>'
+                . '<span class="btn-label"><span class="action-label" data-gv-i18n="%4$s">%5$s</span></span>'
+                . '</a>',
             $esc($name),
             $esc($url),
             $icon,
@@ -238,10 +241,10 @@ class TagController extends AbstractCrudGridController
                 'label' => 'tag.posts',
                 'sortable' => true,
                 'value' => fn(array $data, int $index, DataColumn $column): string =>
-                    $column->renderTemplate('gridview/tag/_posts_popularity.html.twig', [
-                        'count' => (int) ($data['postCount'] ?? 0),
-                        'published' => (int) ($data['publishedCount'] ?? 0),
-                    ]),
+                $column->renderTemplate('gridview/tag/_posts_popularity.html.twig', [
+                    'count' => (int) ($data['postCount'] ?? 0),
+                    'published' => (int) ($data['publishedCount'] ?? 0),
+                ]),
                 'twigFilter' => 'raw',
             ],
             // Auto-wired to the CRUD routes; the buttons/layout come from
