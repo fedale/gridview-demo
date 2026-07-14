@@ -44,12 +44,14 @@ class UserController extends AbstractCrudGridController
             'model' => User::class,
             'alias' => 'e',
             'pagination' => ['defaultPageSize' => 20],
-            'searchFields' => [
-                'id' => ['number', 'e.id'],
-                'fullName' => ['text', 'e.fullName'],
-                'email' => ['text', 'e.email'],
-                'isVerified' => ['boolean', 'e.isVerified'],
-                'lastLoginAt' => ['date', 'e.lastLoginAt'],
+            'search' => [
+                'map' => [
+                    'id' => ['number', 'e.id'],
+                    'fullName' => ['text', 'e.fullName'],
+                    'email' => ['text', 'e.email'],
+                    'isVerified' => ['boolean', 'e.isVerified'],
+                    'lastLoginAt' => ['date', 'e.lastLoginAt'],
+                ],
             ],
             'sort' => [
                 'map' => [
