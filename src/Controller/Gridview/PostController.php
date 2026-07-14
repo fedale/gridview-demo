@@ -4,11 +4,14 @@ namespace App\Controller\Gridview;
 
 use App\Entity\Category;
 use App\Entity\Post;
+use App\Entity\Series;
+use App\Entity\Tag;
 use App\Entity\User;
 use App\Enum\PostStatus;
 use Fedale\GridviewBundle\Column\Config\ActionColumn;
 use Fedale\GridviewBundle\Column\Config\BooleanColumn;
 use Fedale\GridviewBundle\Column\Config\CheckboxColumn;
+use Fedale\GridviewBundle\Column\Config\DatetimeColumn;
 use Fedale\GridviewBundle\Column\Config\HtmlColumn;
 use Fedale\GridviewBundle\Column\Config\MediaColumn;
 use Fedale\GridviewBundle\Column\Config\NumberColumn;
@@ -54,14 +57,12 @@ class PostController extends AbstractCrudGridController
             'form' => [
                 //             // How the add/edit form is shown: 'modal' | 'page' | 'custom' (null = built-in default).
                 'mode' => 'page',
-                // Render the form with Symfony's Bootstrap 5 theme so the inputs
-                // pick up .form-control/.form-select/.form-check (styled by the
-                // bootstrap.min.css this page already loads), matching the
-                // EasyAdmin look. The bundle default gv_form_theme only adds gv-*
-                // hooks and leaves the input itself unstyled.
-                'theme' => ['bootstrap_5_layout.html.twig'],
-                //             // Custom form layout template; null = automatic rendering.
-                //             'view' => null,
+                // The Bootstrap 5 form theme is set globally in gridview.yaml
+                // (defaults.behavior.formTheme), so it isn't repeated per grid.
+                // Custom form layout: a template with a {attribute} token per field
+                // (EasyAdmin-style two-column + fieldsets). Fields with a control
+                // but no token still render at the end via form_end().
+                'view' => 'gridview/post_form.html.twig',
                 //             // Action buttons: 'header' placement drops the in-form submit; 'layout' orders 'buttons'.
                 //             'actions' => ['placement' => 'inline', 'layout' => null, 'buttons' => null],
                 //             // Query key of the filter form (used to resolve "all" bulk ids).
@@ -115,8 +116,11 @@ class PostController extends AbstractCrudGridController
                 ->filterText(trim: false)->required(),
             SelectColumn::new('status')->label('Status')->sortable()
                 ->enum(PostStatus::class, required: true),
+            // control(true) keeps the checkbox in the form as an optional field.
+            // Avoid required() here: on a checkbox it means "must be checked"
+            // (HTML5 required), which would block saving an unfeatured post.
             BooleanColumn::new('isFeatured')->label('Is featured')->sortable()
-                ->filterBoolean()->required(),
+                ->filterBoolean()->control(true),
             RelationColumn::new('author')->label('Author')->relation(User::class),
             RelationColumn::new('category')->label('Category')
                 ->relation(Category::class, choiceLabel: 'name'),
@@ -145,6 +149,28 @@ class PostController extends AbstractCrudGridController
                 ])
                 ->onlyOnForm(),
             NumberColumn::new('viewCount')->label('Views')->onlyOnShow(),
+
+            // Status & visibility fieldset (form only).
+            DatetimeColumn::new('publishedAt')->label('Published at')
+                ->control(['type' => 'datetime'])->onlyOnForm(),
+            DatetimeColumn::new('scheduledAt')->label('Scheduled at')
+                ->control(['type' => 'datetime'])->onlyOnForm(),
+
+            // Classification fieldset: tags is a many-to-many, so the relation
+            // control is multiple + by_reference:false (Post has add/removeTag()).
+            RelationColumn::new('tags')->label('Tags')
+                ->control([
+                    'type'    => 'relation',
+                    'options' => ['class' => Tag::class, 'choice_label' => 'name', 'multiple' => true, 'by_reference' => false],
+                ])
+                ->onlyOnForm(),
+
+            // Series fieldset (form only).
+            RelationColumn::new('series')->label('Series')
+                ->control(['type' => 'relation', 'options' => ['class' => Series::class, 'choice_label' => 'title']])
+                ->onlyOnForm(),
+            NumberColumn::new('seriesPosition')->label('Series position')
+                ->control(['type' => 'integer'])->onlyOnForm(),
 
             ActionColumn::new()->label(false),
         ];

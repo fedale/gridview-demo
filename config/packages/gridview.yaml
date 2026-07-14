@@ -21,6 +21,11 @@ fedale_gridview:
             showTfoot: true
         behavior:
             useTurbo: true
+            # Render CRUD forms with Symfony's Bootstrap 5 theme (this is a
+            # Bootstrap app), so inputs get .form-control/.form-select/.form-check
+            # instead of the bundle's unstyled gv-* hooks. Applies to every grid;
+            # a controller can still override form.theme in viewConfig().
+            formTheme: 'bootstrap_5_layout.html.twig'
         pagination:
             pageSizeOptions: [10, 20, 50, 100]
             maxPageSize: 100

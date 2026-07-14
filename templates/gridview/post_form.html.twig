@@ -1,0 +1,51 @@
+{#
+   Custom CRUD form layout for the Post grid (wired via form.view in
+   PostController). Each {attribute} token is replaced by that field's rendered
+   widget (honoring the form theme); any control-backed field without a token
+   still renders at the end through form_end(). Two-column layout with the same
+   fieldsets as the EasyAdmin PostCrudController (Content / Status & visibility /
+   Classification / Series).
+#}
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">Content</div>
+            <div class="card-body">
+                {title}
+                {slug}
+                {featuredImage}
+                {content}
+                {summary}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card mb-4">
+            <div class="card-header">Status &amp; visibility</div>
+            <div class="card-body">
+                {status}
+                {isFeatured}
+                {publishedAt}
+                {scheduledAt}
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">Classification</div>
+            <div class="card-body">
+                {author}
+                {category}
+                {tags}
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">Series</div>
+            <div class="card-body">
+                {series}
+                {seriesPosition}
+            </div>
+        </div>
+    </div>
+</div>
