@@ -59,6 +59,9 @@ class PostController extends AbstractCrudGridController
             // 'alias' defaults to 'e' (matching the DQL used in 'searchFields'
             // and 'sort' below). Set it only to change the query-builder alias.
             'pagination' => ['defaultPageSize' => 20],
+            // Fetch-join the to-one relations the columns read, so they are
+            // hydrated with the list query instead of one lazy load per row.
+            'eager' => ['author', 'category'],
             'searchFields' => [
                 'id' => ['number', 'e.id'],
                 'title' => ['text', 'e.title', ['trim' => false]],
