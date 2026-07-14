@@ -54,8 +54,12 @@ class PostController extends AbstractCrudGridController
             'form' => [
                 //             // How the add/edit form is shown: 'modal' | 'page' | 'custom' (null = built-in default).
                 'mode' => 'page',
-                //             // Symfony form theme(s), e.g. ['bootstrap_5_layout.html.twig'].
-                //             'theme' => '@FedaleGridview/form/gv_form_theme.html.twig',
+                // Render the form with Symfony's Bootstrap 5 theme so the inputs
+                // pick up .form-control/.form-select/.form-check (styled by the
+                // bootstrap.min.css this page already loads), matching the
+                // EasyAdmin look. The bundle default gv_form_theme only adds gv-*
+                // hooks and leaves the input itself unstyled.
+                'theme' => ['bootstrap_5_layout.html.twig'],
                 //             // Custom form layout template; null = automatic rendering.
                 //             'view' => null,
                 //             // Action buttons: 'header' placement drops the in-form submit; 'layout' orders 'buttons'.
