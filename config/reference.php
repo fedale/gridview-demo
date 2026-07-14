@@ -1560,6 +1560,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *             formName?: scalar|Param|null, // Default: "fedaleForm"
  *             maxQueryLength?: int|Param, // Default: 4000
  *             crudMode?: scalar|Param|null, // Default: "modal"
+ *             formTheme?: mixed, // Default: null
  *             filterControls?: array{
  *                 inHeader?: bool|Param, // Default: true
  *                 inlineClear?: bool|Param, // Default: false
