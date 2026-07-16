@@ -17,7 +17,15 @@ class CommentController extends AbstractCrudGridController
     protected function viewConfig(): array
     {
         return [
-            'template' => ['index' => 'gridview/index.html.twig'],
+            'options' => [
+                'display' => [
+                    'layout' => [
+                        'header' => '{heading}',
+                        'footer' => '{pagination} {resultsSummary} {pageSize}',
+                    ]
+                ]
+
+            ]
         ];
     }
 
@@ -27,13 +35,15 @@ class CommentController extends AbstractCrudGridController
             'model' => Comment::class,
             'alias' => 'e',
             'pagination' => ['defaultPageSize' => 20],
-            'searchFields' => [
-                'id' => ['number', 'e.id'],
-                'content' => ['text', 'e.content'],
-                'publishedAt' => ['date', 'e.publishedAt'],
-                'status' => ['choice', 'e.status'],
-                'author' => ['relation', 'e.author'],
-                'post' => ['relation', 'e.post'],
+            'search' => [
+                'map' => [
+                    'id' => ['number', 'e.id'],
+                    'content' => ['text', 'e.content'],
+                    'publishedAt' => ['date', 'e.publishedAt'],
+                    'status' => ['choice', 'e.status'],
+                    'author' => ['relation', 'e.author'],
+                    'post' => ['relation', 'e.post'],
+                ],
             ],
             'sort' => [
                 'map' => [

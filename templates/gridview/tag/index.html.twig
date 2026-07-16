@@ -1,5 +1,5 @@
 {#
-   Tag list page. Variant of the shared gridview/index.html.twig that moves the
+   Tag list page. Variant of the shared gridview/with_sidebar.html.twig that moves the
    "Add Tag" button out of the grid's in-grid header/toolbar and into the page
    content-header (to the right of the title).
 
@@ -13,13 +13,24 @@
    here, so this is a plain link to the /new route. Direct navigation is not XHR,
    so the controller renders the full-page CRUD form (crud/page.html.twig).
 #}
-{% extends 'gridview/index.html.twig' %}
+{% extends 'gridview/with_sidebar.html.twig' %}
 
 {# Page-level marker on <body>: scopes the Tag-only "selection mode" CSS (collapse
    the content-header, leaving just the bulk bar) in gridview-shell.css. #}
 {% block body_class %} page-tag{% endblock %}
 
 {% block content_header_actions %}
+    {# Grid title, rendered here in the content-header row next to the actions.
+       The grid's own {heading} is dropped in TagController, so the title lives
+       only here and is not duplicated. Source of truth stays the grid config
+       (options.display.title = labels.heading), resolved like the bundle heading. #}
+    {% set _title = gridview.options.display.title %}
+    {% if _title is not empty %}
+        <div class="content-header-title">
+            <h1 class="title" {{ gv_i18n(_title) }}>{{ gv_client_label(_title) ? gv_client_text(_title) : _title|trans({}, 'GridviewBundle') }}</h1>
+        </div>
+    {% endif %}
+
     {% set _crud = gridview.options.integration.crud|default({}) %}
     {# The name filter field is built on the SearchForm even though its per-column
        header input is suppressed (TagController sets the column's filterBar=true);

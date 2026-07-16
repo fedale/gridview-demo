@@ -31,7 +31,8 @@ class DummyJsonUserController extends AbstractGridController
     {
         return [
             'labels' => ['heading' => 'Users (public API demo)'],
-            'template' => ['index' => 'gridview/index.html.twig'],
+            // No 'template' override: falls back to the app default
+            // ('gridview/with_sidebar.html.twig'), same as every other grid here.
             'options' => [
                 'behavior' => ['globalSearch' => ['firstName', 'lastName', 'email']],
             ],
