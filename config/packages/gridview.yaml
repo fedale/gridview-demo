@@ -27,4 +27,11 @@ fedale_gridview:
         attributes:
             class: 'table table-striped'
 
-    gridviews: {}
+    gridviews:
+        # Read-only demo grid backed by https://dummyjson.com/users instead of
+        # Doctrine. Grid id = strtolower(ReflectionClass(getDataClass())->getShortName())
+        # -> App\Model\DummyJsonUser -> "dummyjsonuser". See
+        # App\DataProvider\DummyJsonUserDataProvider and
+        # App\Controller\Gridview\DummyJsonUserController.
+        dummyjsonuser:
+            dataProvider: App\DataProvider\DummyJsonUserDataProvider

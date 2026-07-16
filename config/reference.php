@@ -1530,6 +1530,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         cookie_name?: scalar|Param|null, // Default: "gv_locale"
  *     },
  *     defaults?: array{
+ *         dataProvider?: scalar|Param|null, // Default: null
  *         display?: array{
  *             caption?: scalar|Param|null, // Default: null
  *             title?: scalar|Param|null, // Default: null
@@ -1602,6 +1603,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         },
  *     },
  *     gridviews?: array<string, array{ // Default: []
+ *         dataProvider?: scalar|Param|null,
  *         display?: array{
  *             caption?: scalar|Param|null,
  *             title?: scalar|Param|null,

@@ -22,3 +22,12 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    # DummyJsonUserDataProvider is autowired for its constructor, but Sort/
+    # Pagination are set via bundle-style setter injection (not constructor
+    # args), mirroring fedale_gridview.entity_data_provider's own `calls:` in
+    # vendor/fedale/gridview-bundle/config/services.yaml.
+    App\DataProvider\DummyJsonUserDataProvider:
+        calls:
+            - [setSort, ['@fedale_gridview.sort']]
+            - [setPagination, ['@fedale_gridview.pagination']]
