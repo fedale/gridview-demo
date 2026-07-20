@@ -4,6 +4,14 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    # Default origin for the InternalProduct grid's token-gated API. Empty means
+    # "self-call the host serving the request" (correct on PHP-FPM/production).
+    # Override with the INTERNAL_API_BASE_URL env var when the dev server runs a
+    # single worker (`symfony serve`): a same-worker self-call deadlocks, so
+    # point it at a second server, e.g. INTERNAL_API_BASE_URL=http://127.0.0.1:8001
+    # with `php -S 127.0.0.1:8001 public/index.php` running in another terminal.
+    # See App\Controller\Gridview\InternalProductController.
+    env(INTERNAL_API_BASE_URL): ''
 
 services:
     # default configuration for services in *this* file
@@ -23,11 +31,7 @@ services:
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 
-    # DummyJsonUserDataProvider is autowired for its constructor, but Sort/
-    # Pagination are set via bundle-style setter injection (not constructor
-    # args), mirroring fedale_gridview.entity_data_provider's own `calls:` in
-    # vendor/fedale/gridview-bundle/config/services.yaml.
-    App\DataProvider\DummyJsonUserDataProvider:
-        calls:
-            - [setSort, ['@fedale_gridview.sort']]
-            - [setPagination, ['@fedale_gridview.pagination']]
+    # The HTTP-backed demo grids (dummyjsonuser, internalproduct) now use the
+    # bundle's built-in Fedale\GridviewBundle\DataProvider\JsonDataProvider,
+    # wired inside the bundle itself — no per-grid provider service is needed
+    # here anymore.

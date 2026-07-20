@@ -11,11 +11,13 @@ use Symfony\Component\Routing\Attribute\Route;
  * of Doctrine — proves the data layer is pluggable without touching the
  * bundle's default (global, Doctrine-backed) `fedale_gridview.entity_data_provider`
  * service, which every other demo grid (Category/Comment/Tag/User) still uses.
- * The swap is declared in config/packages/gridview.yaml
- * (`gridviews.dummyjsonuser.dataProvider: App\DataProvider\DummyJsonUserDataProvider`)
- * — no controller code needed, see AbstractGridController::buildGridview()
- * -> GridviewBuilder::renderGridview(). Extends the read-only
- * {@see AbstractGridController} (not the CRUD variant): there is no
+ * The provider is the bundle's built-in
+ * {@see \Fedale\GridviewBundle\DataProvider\JsonDataProvider}, selected in
+ * config/packages/gridview.yaml
+ * (`gridviews.dummyjsonuser.dataProvider: ...JsonDataProvider`); the dummyjson
+ * response shape (users/total keys, the /users/search endpoint) is described
+ * below in dataConfig()['model'] — no custom provider class needed. Extends the
+ * read-only {@see AbstractGridController} (not the CRUD variant): there is no
  * GridCrudHandlerInterface equivalent for a non-Doctrine backend today, so
  * add/edit/delete are out of scope here.
  */
@@ -42,7 +44,14 @@ class DummyJsonUserController extends AbstractGridController
     protected function dataConfig(): array
     {
         return [
-            'model' => 'users',
+            'model' => [
+                'baseUri' => 'https://dummyjson.com',
+                'resource' => 'users',
+                // dummyjson exposes full-text search on a separate endpoint.
+                'searchResource' => 'users/search',
+                'listPath' => 'users',
+                'totalPath' => 'total',
+            ],
             'pagination' => ['defaultPageSize' => 10],
             'sort' => [
                 'map' => [

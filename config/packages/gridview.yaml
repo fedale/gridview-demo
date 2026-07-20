@@ -37,6 +37,17 @@ fedale_gridview:
         # Doctrine. Grid id = strtolower(ReflectionClass(getDataClass())->getShortName())
         # -> App\Model\DummyJsonUser -> "dummyjsonuser". See
         # App\DataProvider\DummyJsonUserDataProvider and
-        # App\Controller\Gridview\DummyJsonUserController.
+        # App\Controller\Gridview\DummyJsonUserController. The endpoint shape
+        # (users/total keys, /users/search) is described in that controller's
+        # dataConfig()['model']; no custom provider class is needed anymore.
         dummyjsonuser:
-            dataProvider: App\DataProvider\DummyJsonUserDataProvider
+            dataProvider: Fedale\GridviewBundle\DataProvider\JsonDataProvider
+
+        # Read-only demo grid backed by the demo's OWN token-gated JSON API
+        # (App\Controller\Api\InternalProductApiController), reached through the
+        # same built-in JsonDataProvider. Proves a JSON endpoint that requires an
+        # Authorization header works: the Bearer token is forwarded on every
+        # request as a header set in the controller's dataConfig(). See
+        # App\Controller\Gridview\InternalProductController.
+        internalproduct:
+            dataProvider: Fedale\GridviewBundle\DataProvider\JsonDataProvider
