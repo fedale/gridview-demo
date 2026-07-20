@@ -51,3 +51,12 @@ fedale_gridview:
         # App\Controller\Gridview\InternalProductController.
         internalproduct:
             dataProvider: Fedale\GridviewBundle\DataProvider\JsonDataProvider
+
+        # Read-only demo grid backed by the remote, token-gated reference API
+        # (https://test-reference.waltertosto.it/api/references), reached through
+        # the same built-in JsonDataProvider. The PHP counterpart of the Angular
+        # "reference" screen; this first version renders only the "column"
+        # category (sent as a fixed query param). Bearer token from
+        # REFERENCE_API_TOKEN. See App\Controller\Gridview\ReferenceController.
+        reference:
+            dataProvider: Fedale\GridviewBundle\DataProvider\JsonDataProvider

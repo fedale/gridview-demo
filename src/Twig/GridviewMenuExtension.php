@@ -67,6 +67,9 @@ class GridviewMenuExtension extends AbstractExtension
             $this->section('Administration'),
             $this->entity('user', 'Users', 'fa fa-users', $path),
 
+            $this->section('Remote API'),
+            $this->entity('reference', 'References (Column)', 'fa-solid fa-industry', $path),
+
             $this->section('Resources'),
             $this->entity('form-field-reference', 'Form Field Reference', 'fa-solid fa-table-cells', $path),
             $this->route('Fixtures data', 'fa-solid fa-database', 'admin_regenerate_fixtures', $locale),
