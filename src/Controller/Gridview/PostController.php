@@ -68,8 +68,26 @@ class PostController extends AbstractCrudGridController
                 //             // Query key of the filter form (used to resolve "all" bulk ids).
                 //             'filterName' => 'fedaleForm',
             ],
-            //         // display / behavior / integration overrides, plus 'actionLayout' for the action column.
-            //         'options' => [],
+            // display / behavior / integration overrides, plus 'actionLayout' for the action column.
+            'options' => [
+                'display' => [
+                    // Runtime view switch: table (default) / cards / list. The
+                    // {viewSwitcher} token is injected into the toolbar on its own
+                    // as soon as the map holds more than one entry.
+                    //
+                    // Both card and list use the BUILT-IN item templates (unlike the
+                    // Category grid, which overrides them), so what each view draws
+                    // comes straight from the per-view axis on the columns below.
+                    'renderer' => [
+                        'default' => 'table',
+                        'map' => [
+                            'table' => [],
+                            'card' => ['min' => '20rem', 'titleField' => 'title'],
+                            'list' => [],
+                        ],
+                    ],
+                ],
+            ],
         ];
     }
 
@@ -111,7 +129,10 @@ class PostController extends AbstractCrudGridController
     {
         return [
             CheckboxColumn::new(),
-            NumberColumn::new('id')->label('Id')->sortable()->filterNumber(),
+            // Per-view visibility: a surrogate key earns its place in a dense
+            // table and nowhere else, so it sits out the card and list views.
+            NumberColumn::new('id')->label('Id')->sortable()->filterNumber()
+                ->hideInViews('card', 'list'),
             TextColumn::new('title')->label('Title')->sortable()
                 ->filterText(trim: false)->required(),
             SelectColumn::new('status')->label('Status')->sortable()
@@ -120,10 +141,27 @@ class PostController extends AbstractCrudGridController
             // Avoid required() here: on a checkbox it means "must be checked"
             // (HTML5 required), which would block saving an unfeatured post.
             BooleanColumn::new('isFeatured')->label('Is featured')->sortable()
-                ->filterBoolean()->control(true),
+                ->filterBoolean()->control(true)
+                // A ✓/✗ pair reads fine in a table row or a list line; on a card
+                // it costs a whole label/value block for one glyph.
+                ->hideInViews('card'),
             RelationColumn::new('author')->label('Author')->relation(User::class),
             RelationColumn::new('category')->label('Category')
                 ->relation(Category::class, choiceLabel: 'name'),
+
+            // The teaser, card-side only: a card has room for a paragraph, a table
+            // row does not. onlyOnIndex() keeps it out of the form and the detail
+            // view (the `summary` control below owns the write side), and
+            // onlyInViews('card') keeps it out of the table and the list — the two
+            // axes compose.
+            TextColumn::new('summary')->label('Summary')->notSortable()
+                ->value(static function (array $data): string {
+                    $text = trim(strip_tags((string) ($data['summary'] ?? '')));
+
+                    return mb_strlen($text) > 140 ? mb_substr($text, 0, 140) . '…' : $text;
+                })
+                ->onlyOnIndex()
+                ->onlyInViews('card'),
 
             // Fields kept out of the grid but shown in the CRUD form and/or the
             // detail view through the per-context visibility sugar. No visible()
