@@ -145,9 +145,22 @@ class PostController extends AbstractCrudGridController
                 // A ✓/✗ pair reads fine in a table row or a list line; on a card
                 // it costs a whole label/value block for one glyph.
                 ->hideInViews('card'),
-            RelationColumn::new('author')->label('Author')->relation(User::class),
+            // choiceLabel drives both the cell (the related row's `fullName`
+            // instead of its id) and the relation control's option labels.
+            // The relation FILTER is a plain choice list, so it needs its own
+            // `choices` map — the bundle never queries the database to fill a
+            // filter (use `ajax_url` for lists too big to inline).
+            RelationColumn::new('author')->label('Author')
+                ->relation(User::class, choiceLabel: 'fullName')
+                ->filter(['type' => 'relation', 'options' => [
+                    'choices' => $this->relationChoices(User::class, 'getFullName', 'fullName'),
+                    'searchable' => true,
+                ]]),
             RelationColumn::new('category')->label('Category')
-                ->relation(Category::class, choiceLabel: 'name'),
+                ->relation(Category::class, choiceLabel: 'name')
+                ->filter(['type' => 'relation', 'options' => [
+                    'choices' => $this->relationChoices(Category::class, 'getName', 'name'),
+                ]]),
 
             // The teaser, card-side only: a card has room for a paragraph, a table
             // row does not. onlyOnIndex() keeps it out of the form and the detail
@@ -212,5 +225,24 @@ class PostController extends AbstractCrudGridController
 
             ActionColumn::new()->label(false),
         ];
+    }
+
+    /**
+     * `['Label' => id]` for a relation filter's option list, ordered by the label
+     * field. Kept generic so both filters above read the same way.
+     *
+     * @param class-string $class
+     *
+     * @return array<string, int>
+     */
+    private function relationChoices(string $class, string $labelGetter, string $orderBy): array
+    {
+        $choices = [];
+        foreach ($this->em()->getRepository($class)->findBy([], [$orderBy => 'ASC']) as $entity) {
+            $label = (string) $entity->{$labelGetter}();
+            $choices[$label !== '' ? $label : '#' . $entity->getId()] = $entity->getId();
+        }
+
+        return $choices;
     }
 }
