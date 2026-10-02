@@ -108,14 +108,20 @@ class GridviewMenuExtension extends AbstractExtension
      */
     private function entity(string $slug, string $label, string $icon, string $path, int $badge = 0, string $badgeClass = 'text-bg-secondary'): array
     {
-        $url = '/gridview/' . $slug;
+        // Ask the router for the path instead of rebuilding it from the slug: a
+        // controller is free to mount itself anywhere (`post` lives under
+        // /gridview/posts, `user` under /gridview/users), and a hand-built URL
+        // silently 404s the moment the two drift apart.
+        $route = 'gridview_' . str_replace('-', '_', $slug) . '_index';
+        $enabled = $this->router->getRouteCollection()->get($route) !== null;
+        $url = $enabled ? $this->router->generate($route) : '/gridview/' . $slug;
 
         return [
             'type' => 'link',
             'label' => $label,
             'icon' => $icon,
             'url' => $url,
-            'enabled' => $this->router->getRouteCollection()->get('gridview_' . str_replace('-', '_', $slug) . '_index') !== null,
+            'enabled' => $enabled,
             'active' => $path === $url || str_starts_with($path, $url . '/'),
             'target' => null,
             'badge' => $badge > 0 ? ['text' => (string) $badge, 'class' => $badgeClass] : null,
