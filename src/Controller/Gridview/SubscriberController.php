@@ -9,6 +9,7 @@ use Fedale\GridviewBundle\Column\Config\DatetimeColumn;
 use Fedale\GridviewBundle\Column\Config\NumberColumn;
 use Fedale\GridviewBundle\Column\Config\SelectColumn;
 use Fedale\GridviewBundle\Column\Config\TextColumn;
+use Fedale\GridviewBundle\Column\Config\VirtualColumn;
 use Fedale\GridviewBundle\Controller\AbstractCrudGridController;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -58,6 +59,19 @@ class SubscriberController extends AbstractCrudGridController
     //     ];
     // }
 
+    protected function viewConfig(): array
+    {
+        return [
+            'options' => [
+                // The `subscriber` column is joined at render time, so there is
+                // nothing in the database to match it against. The global search
+                // covers the two real fields behind it instead — one input, both
+                // columns — and the default CRUD toolbar already shows it.
+                'behavior' => ['globalSearch' => ['e.name', 'e.email']],
+            ],
+        ];
+    }
+
     protected function dataConfig(): array
     {
         return [
@@ -87,6 +101,9 @@ class SubscriberController extends AbstractCrudGridController
             'sort' => [
                 'map' => [
                     'id' => ['asc' => ['e.id'], 'desc' => ['e.id']],
+                    // Sorting a virtual column: one key, the real fields behind
+                    // it. The header link appears because the key is mapped.
+                    'subscriber' => ['asc' => ['e.name', 'e.email'], 'desc' => ['e.name', 'e.email']],
                     'email' => ['asc' => ['e.email'], 'desc' => ['e.email']],
                     'name' => ['asc' => ['e.name'], 'desc' => ['e.name']],
                     'subscribedAt' => ['asc' => ['e.subscribedAt'], 'desc' => ['e.subscribedAt']],
@@ -110,8 +127,15 @@ class SubscriberController extends AbstractCrudGridController
     {
         return [
             NumberColumn::new('id')->label('Id')->sortable()->filterNumber(),
-            TextColumn::new('email')->label('Email')->sortable()->filterText()->required(),
-            TextColumn::new('name')->label('Name')->sortable()->filterText()->control(true),
+            // One column to read, two fields to write. The grid and the detail
+            // view show "Ada Lovelace · ada@example.com"; the create/update form
+            // gets `name` and `email` back as separate inputs, each with its own
+            // label and validation. Without this the same two fields would be
+            // declared twice — once to display, once to edit.
+            VirtualColumn::new('subscriber')->label('Subscriber')->from([
+                TextColumn::new('name')->label('Name')->control(true),
+                TextColumn::new('email')->label('Email')->required(),
+            ], separator: ' · '),
             DatetimeColumn::new('subscribedAt')->label('Subscribed at')->sortable()->filterDate()->required(),
             BooleanColumn::new('isConfirmed')->label('Is confirmed')->sortable()->filterBoolean()->required(),
             DatetimeColumn::new('confirmedAt')->label('Confirmed at')->sortable()->filterDate()->control(true),
