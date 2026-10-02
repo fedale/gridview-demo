@@ -19,6 +19,10 @@
                 "enabled": true,
                 "fetch": "lazy"
             },
+            "export": {
+                "enabled": true,
+                "fetch": "lazy"
+            },
             "visibility": {
                 "enabled": true,
                 "fetch": "lazy"
