@@ -59,6 +59,7 @@ class GridviewMenuExtension extends AbstractExtension
             $this->entity('category', 'Categories', 'fa fa-folder', $path),
             $this->entity('tag', 'Tags', 'fas fa-tags', $path),
             $this->entity('series', 'Series', 'fa fa-list-ol', $path),
+            $this->entity('post-translation', 'Translations', 'fa fa-language', $path),
 
             $this->section('Community'),
             $this->entity('comment', 'Comments', 'far fa-comments', $path, $pending, 'text-bg-danger'),

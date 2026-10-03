@@ -2,6 +2,7 @@
 
 namespace App\Story;
 
+use App\Entity\PostTranslation;
 use App\Enum\PostStatus;
 use App\Factory\CategoryFactory;
 use App\Factory\CommentFactory;
@@ -11,6 +12,7 @@ use App\Factory\SubscriberFactory;
 use App\Factory\TagFactory;
 use App\Factory\UserFactory;
 use Zenstruck\Foundry\Attribute\AsFixture;
+use function Zenstruck\Foundry\Persistence\persist;
 use Zenstruck\Foundry\Story;
 
 #[AsFixture('initial_state')]
@@ -95,5 +97,21 @@ final class InitialStateStory extends Story
         // Create subscribers
         SubscriberFactory::createMany(40);
         SubscriberFactory::new()->pending()->many(10)->create();
+
+        // Translate a slice of the posts. PostTranslation is keyed by the pair
+        // (post, locale) and has no surrogate id to fall back on — which is
+        // exactly what the grid has to address records by.
+        $locales = ['it', 'en', 'fr', 'es'];
+        foreach (\array_slice($allPosts, 0, 12) as $index => $postProxy) {
+            foreach (\array_slice($locales, 0, random_int(1, 3)) as $locale) {
+                persist(PostTranslation::class, [
+                    'post' => $postProxy,
+                    'locale' => $locale,
+                    'title' => \sprintf('[%s] %s', strtoupper($locale), $postProxy->getTitle()),
+                    'summary' => $postProxy->getSummary(),
+                    'isReviewed' => 0 === $index % 3,
+                ]);
+            }
+        }
     }
 }
