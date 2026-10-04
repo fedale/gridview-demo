@@ -62,6 +62,9 @@ class SubscriberController extends AbstractCrudGridController
     protected function viewConfig(): array
     {
         return [
+            // No `subscriber.add` in the client catalog, so the convention key
+            // would render as itself on the button.
+            'labels' => ['add' => 'New subscriber'],
             'options' => [
                 // The `subscriber` column is joined at render time, so there is
                 // nothing in the database to match it against. The global search

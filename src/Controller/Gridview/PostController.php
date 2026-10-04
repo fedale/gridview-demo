@@ -40,6 +40,11 @@ class PostController extends AbstractCrudGridController
     protected function viewConfig(): array
     {
         return [
+            // The add label defaults to the convention key `<id>.add`, which the
+            // client catalog does not carry for this grid — it rendered as
+            // "post.add" on the button and in the page title. A literal is what
+            // the other grids without a key use.
+            'labels' => ['add' => 'New post'],
             //         // Page/modal titles; null derives them from the grid id (e.g. '<id>.label').
             //         'labels' => ['heading' => null, 'add' => null, 'edit' => null],
             //         // Grid <table> wrapper attributes.
@@ -150,8 +155,10 @@ class PostController extends AbstractCrudGridController
             // The relation FILTER is a plain choice list, so it needs its own
             // `choices` map — the bundle never queries the database to fill a
             // filter (use `ajax_url` for lists too big to inline).
+            // required: Post::$author is a NOT NULL join column, so an unset author
+            // is a 500 from the database rather than a form error.
             RelationColumn::new('author')->label('Author')
-                ->relation(User::class, choiceLabel: 'fullName')
+                ->relation(User::class, choiceLabel: 'fullName', required: true)
                 ->filter(['type' => 'relation', 'options' => [
                     'choices' => $this->relationChoices(User::class, 'getFullName', 'fullName'),
                     'searchable' => true,
