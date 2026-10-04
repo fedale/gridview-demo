@@ -1,0 +1,30 @@
+{#
+   Full page for a single tag: the demo shell (sidebar + main content) wrapping
+   the bundle's key/value table.
+
+   The bundle's own detailview template is a bare <table>, meant to be embedded.
+   A Turbo visit needs a whole document, so a show action linked from the grid —
+   which breaks out of the grid's <turbo-frame> — has to land on a page like this
+   one, not on the fragment.
+#}
+{% extends 'gridview/layout.html.twig' %}
+
+{% block page_title %}{{ detailview.options.title|default('Tag') }}{% endblock %}
+{% block content_title %}{{ model.name|default('Tag') }}{% endblock %}
+
+{# No grid on this page, so the top-bar search would do nothing. #}
+{% block content_search %}{% endblock %}
+
+{% block content_header_actions %}
+    <div class="content-header-actions">
+        <a class="btn btn-secondary" href="{{ path('gridview_tag_index') }}" data-turbo-frame="_top">
+            <span class="btn-label" data-gv-i18n="action.return_listing">Back to listing</span>
+        </a>
+    </div>
+{% endblock %}
+
+{% block grid %}
+    <div class="gv-detail-page">
+        {% include '@FedaleGridview/detailview/detailview.html.twig' %}
+    </div>
+{% endblock %}

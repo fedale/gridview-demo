@@ -129,19 +129,17 @@ class TagController extends AbstractCrudGridController
 
         $buttons['edit'] = fn(array $row): string => $this->eaAction(
             'edit',
-            $this->generateUrl($this->routeName('update'), ['id' => $row['id']]),
+            $this->generateUrl($this->routeName('update'), ['id' => $this->rowId($row)]),
             self::ICON_EDIT,
             'action.edit',
             'Edit',
         );
 
-        // 'show' route not wired yet — href '#' keeps the button visible so the
-        // column layout is final. Swap to
-        // $this->generateUrl($this->routeName('show'), ['id' => $row['id']])
-        // once the show route exists.
+        // Wired to TagDetailController, which mounts the bundle's show action
+        // under /gridview/tag/detail/{id}.
         $buttons['show'] = fn(array $row): string => $this->eaAction(
             'show',
-            '#',
+            $this->generateUrl($this->routeName('show'), ['id' => $this->rowId($row)]),
             self::ICON_SHOW,
             'action.show',
             'Show',
@@ -150,7 +148,7 @@ class TagController extends AbstractCrudGridController
         $buttons['viewPosts'] = fn(array $row): string => $this->eaAction(
             'viewPosts',
             $this->generateUrl('admin_post_index', [
-                'filters' => ['tags' => ['value' => $row['id'], 'comparison' => '=']],
+                'filters' => ['tags' => ['value' => $this->rowId($row), 'comparison' => '=']],
             ]),
             self::ICON_VIEW_POSTS,
             'action.view_posts',
@@ -171,8 +169,12 @@ class TagController extends AbstractCrudGridController
     {
         $esc = static fn(string $v): string => htmlspecialchars($v, \ENT_QUOTES, 'UTF-8');
 
+        // data-turbo-frame="_top" is load-bearing: the grid renders inside a
+        // <turbo-frame>, and all three targets are full pages with no frame of
+        // that id. Without it Turbo swallows the response and writes "Content
+        // missing" while the URL stays on the listing.
         return \sprintf(
-            '<a class="btn btn-secondary action-%1$s" href="%2$s" role="button" data-action-name="%1$s">'
+            '<a class="btn btn-secondary action-%1$s" href="%2$s" role="button" data-turbo-frame="_top" data-action-name="%1$s">'
                 . '<span class="icon btn-icon">%3$s</span>'
                 . '<span class="btn-label"><span class="action-label" data-gv-i18n="%4$s">%5$s</span></span>'
                 . '</a>',
