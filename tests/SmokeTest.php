@@ -92,7 +92,7 @@ class SmokeTest extends WebTestCase
         yield 'post_detail' => [Post::class, '/en/admin/post/%d'];
         yield 'series_detail' => [Series::class, '/en/admin/series/%d'];
         yield 'subscriber_detail' => [Subscriber::class, '/en/admin/subscriber/%d'];
-        yield 'tag_detail' => [Tag::class, '/en/admin/tag/%d'];
+        yield 'tag_detail' => [Tag::class, '/en/admin/tag/%s'];
         yield 'user_detail' => [User::class, '/en/admin/user/%d'];
     }
 
@@ -127,7 +127,7 @@ class SmokeTest extends WebTestCase
         yield 'post_edit' => [Post::class, '/en/admin/post/%d/edit'];
         yield 'series_edit' => [Series::class, '/en/admin/series/%d/edit'];
         yield 'subscriber_edit' => [Subscriber::class, '/en/admin/subscriber/%d/edit'];
-        yield 'tag_edit' => [Tag::class, '/en/admin/tag/%d/edit'];
+        yield 'tag_edit' => [Tag::class, '/en/admin/tag/%s/edit'];
         yield 'user_edit' => [User::class, '/en/admin/user/%d/edit'];
     }
 
