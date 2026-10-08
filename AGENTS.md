@@ -4,10 +4,26 @@ Welcome, AI assistant. Please follow these guidelines when contributing to this 
 
 ## Project Overview
 
-This is a demo application to showcase the main features of the EasyAdminBundle project, a third-party Symfony bundle for creating admin backends.
-It's also a learning tool for developers who want to understand how to use EasyAdminBundle in their own Symfony applications.
+This is a demo application to showcase the main features of fedale/gridview-bundle, a Symfony bundle for data grids (filtering, sorting, pagination, inline editing, CRUD modals).
+It started from the EasyAdmin demo: the original EasyAdmin backend is kept, and each of its CRUD controllers is rebuilt with gridview-bundle, so the two backends can be compared side by side.
 
 **Requirements:** PHP 8.4+, Symfony 8.x
+
+### Layout
+
+- `src/Controller/Gridview/` - gridview backend (`/gridview/*`), the main subject of this demo
+- `src/Controller/Admin/` - original EasyAdmin backend (`/{_locale}/admin`), kept for comparison
+- `src/Controller/Api/` - token-gated JSON API used by a demo grid
+- `config/packages/gridview.yaml` - bundle configuration (theme, i18n, defaults, data providers)
+- `docs/handoff.md` - work log and next steps
+
+### Working with gridview-bundle
+
+- The bundle is loaded from a symlinked path repository (`../gridview-bundle`); both repos must sit in the same parent directory
+- Fix bundle bugs in `../gridview-bundle`, not in `vendor/`; keep app-specific code in this repo
+- After each bundle update, run `bin/sync-gridview-assets` and `php bin/console sass:build`
+- Gridview routes don't use `{_locale}` on purpose: the locale is handled by `GridviewLocaleListener` via `?_locale=xx`
+- Grids extend `AbstractCrudGridController` (Doctrine CRUD), `AbstractGridController` (read-only) or `AbstractDetailController` (detail view); follow `TagController` as the reference pattern
 
 ## General Rules
 
@@ -36,9 +52,9 @@ If PHP code changed:
 - [ ] `php-cs-fixer fix --dry-run` shows no issues
 - [ ] Run tests with:
   ```bash
-  ./vendor/bin/simple-phpunit                    # All tests
-  ./vendor/bin/simple-phpunit tests/Field/       # Specific directory
-  ./vendor/bin/simple-phpunit --filter=testName  # Specific test
+  ./vendor/bin/phpunit                      # All tests
+  ./vendor/bin/phpunit tests/SmokeTest.php  # Specific file
+  ./vendor/bin/phpunit --filter=testName    # Specific test
   ```
 
 If Twig templates changed:
@@ -102,7 +118,7 @@ If translations changed:
 - Error messages: concise but precise and actionable (e.g. include class names, file paths)
 - Handle exceptions explicitly (no silent catches)
 - Config files in PHP format (`translations/*.php`)
-- Use admin pretty URLs instead of generating them with `AdminUrlGenerator`
+- In EasyAdmin controllers, use admin pretty URLs instead of generating them with `AdminUrlGenerator`
 
 ### PHPDoc
 - No `@return` for void methods
@@ -116,9 +132,9 @@ If translations changed:
 - Icons: FontAwesome 6.x names
 - All user-facing text via `|trans` filter (no hardcoded strings)
 - Translation logic in templates, not PHP (use `TranslatableInterface`)
-- Use Twig components from EasyAdmin when possible (`<twig:ea:* />`)
+- In EasyAdmin templates, use Twig components from EasyAdmin when possible (`<twig:ea:* />`)
 - Accessibility: `aria-*` attributes, semantic tags, labels
-- When adding links, use `path()` and admin pretty URLs instead of building them with `ea_url()`
+- When adding links, use `path()` (and admin pretty URLs in EasyAdmin templates) instead of building them with `ea_url()`
 
 ## JavaScript
 
@@ -142,7 +158,7 @@ If translations changed:
 ## Testing
 
 - Only write functional tests (no unit tests) unless strictly necessary
-- Only test features and behavior of this app, not Symfony or EasyAdmin internals
+- Only test features and behavior of this app, not Symfony, EasyAdmin or gridview-bundle internals
 
 ### Writing Tests
 - Extend `WebTestCase` for functional tests
@@ -161,20 +177,15 @@ Avoid these common mistakes:
 - **Don't use SCSS/LESS** - Standard CSS only
 - **Don't use nested CSS rules** - Keep selectors flat
 
-## Documentation (doc/)
+## Documentation (docs/)
 
-- Format: reStructuredText (.rst)
-- Heading symbols: `=`, `-`, `~`, `.`, `"` for levels 1-5
-- Line length: 72-78 characters
-- Code blocks: prefer `::` over `.. code-block:: php`
-- Separate link text from URLs (no inline hyperlinks)
-- Show config in order: YAML, XML, PHP (or Attributes)
-- Code line limit: 85 chars (use `...` for folded code)
-- Include `use` statements for referenced classes
-- Bash lines prefixed with `$`
-- Root directory: `your-project/`
-- Vendor name: `Acme`
-- URLs: `example.com`, `example.org`, `example.net`
+- Format: Markdown (.md); `README.md` lives in the project root
+- Headings: ATX style in `docs/` (one `#` title per file, then `##`, `###`); `README.md` keeps the setext style (`===`, `---`)
+- Code blocks: fenced, with a language tag (`php`, `yaml`, `bash`, `twig`)
+- Bash lines in README.md prefixed with `$`
+- Reference files by their path from the project root (e.g. `src/Controller/Gridview/TagController.php`)
+- Show bundle config in YAML (`config/packages/gridview.yaml`), matching this app
+- Separate link text from URLs (reference-style links, no inline hyperlinks)
 - Trailing slashes for directories, leading dots for extensions
 
 ### Writing Style

@@ -1,56 +1,114 @@
-EasyAdmin Demo Application
-==========================
+Gridview Demo Application
+=========================
 
-This project is the official [EasyAdmin][1] Demo application that showcases the
-main features of EasyAdmin, a popular admin generator for [Symfony][2] applications.
+This project is a demo application for [fedale/gridview-bundle][1], a
+Symfony bundle for data grids with filtering, sorting, pagination, inline
+editing and CRUD modals.
+
+It started from the [EasyAdmin demo][2]. The original EasyAdmin backend is
+kept, and each of its CRUD controllers is rebuilt with gridview-bundle, so
+you can compare the two backends side by side.
 
 Requirements
 ------------
 
   * PHP 8.4 or higher;
   * PDO-SQLite PHP extension enabled;
-  * and the [usual Symfony application requirements][2].
+  * [Composer][3];
+  * and the [usual Symfony application requirements][4].
+
+You don't need Node.js. Assets are managed with AssetMapper and SassBundle.
 
 Installation
 ------------
 
-Run this command with [Composer][4]:
+The application loads gridview-bundle from a relative path repository
+(`../gridview-bundle`), so you must clone both repositories into the same
+parent directory:
 
 ```bash
-$ composer create-project easyCorp/easyadmin-demo my_project
+$ mkdir gridview && cd gridview/
+$ git clone git@github.com:fedale/gridview-bundle.git
+$ git clone git@github.com:fedale/gridview-demo.git
 ```
+
+Then install the application:
+
+```bash
+$ cd gridview-demo/
+$ composer install                    # symlinks ../gridview-bundle into vendor/
+$ bin/sync-gridview-assets            # copies the EasyAdmin shell CSS
+$ php bin/console importmap:install
+$ php bin/console sass:build
+$ php bin/console foundry:load-fixtures initial_state
+```
+
+The last command creates the SQLite database (`var/data.db`) and loads the
+demo data. You can also regenerate the demo data from the "Fixtures data"
+item in the sidebar.
+
+After each update of gridview-bundle, run `bin/sync-gridview-assets` and
+`php bin/console sass:build` again.
 
 Usage
 -----
 
-There's no need to configure anything to run the application. If you have
-[installed Symfony CLI][5], run this command:
+If you have [installed Symfony CLI][5], run this command:
 
 ```bash
-$ cd my_project/
 $ symfony serve
 ```
 
-Then access the application in your browser at the given URL (<https://localhost:8000> by default).
+If you don't have the Symfony binary installed, run
+`php -S localhost:8000 -t public/` to use the built-in PHP web server.
 
-If you don't have the Symfony binary installed, run `php -S localhost:8000 -t public/`
-to use the built-in PHP web server or [configure a web server][6] to run the application.
+Then open these URLs in your browser:
 
-Contributing
-------------
+  * `/gridview`: the gridview backend;
+  * `/{_locale}/admin` (for example `/en/admin`): the original EasyAdmin
+    backend, for comparison.
 
-This demo application is open source but it does not accept pull requests with
-unsolicited features. If you have a feature idea, create an issue to discuss it
-before implementing it. Pull requests that fix bugs are welcome.
+What the demo shows
+-------------------
+
+Doctrine grids with CRUD (`src/Controller/Gridview/`):
+
+  * Posts, post translations, categories, tags, comments, users and
+    subscribers;
+  * filters (including date filters), global search, per-view columns,
+    virtual columns, composite keys, export and detail views.
+
+Read-only grids backed by JSON APIs (through the built-in
+`JsonDataProvider`):
+
+  * `/gridview/dummy-json-user`: the public [dummyjson.com][6] users API;
+  * `/gridview/internal-product`: the token-gated JSON API of this
+    application (`/internal-api/products`);
+  * `/gridview/reference`: a remote token-gated reference API.
+
+The token-gated grids need these environment variables. Set them in
+`.env.local`:
+
+```dotenv
+INTERNAL_API_BASE_URL=...
+INTERNAL_API_TOKEN=...
+REFERENCE_API_BASE_URL=...
+REFERENCE_API_TOKEN=...
+```
+
+The bundle configuration is in `config/packages/gridview.yaml`. This demo
+uses the `bootstrap5` theme and ships the EN, ES, FR and IT catalogs to the
+browser.
 
 License
 -------
 
-This demo application is published under the MIT license. See LICENSE.md for details.
+This demo application is published under the MIT license. See LICENSE.md
+for details.
 
-[1]: https://github.com/EasyCorp/EasyAdminBundle/
-[2]: https://symfony.com
-[3]: https://github.com/symfony/demo
-[4]: https://getcomposer.org/
+[1]: https://github.com/fedale/gridview-bundle
+[2]: https://github.com/EasyCorp/easyadmin-demo
+[3]: https://getcomposer.org/
+[4]: https://symfony.com/doc/current/setup.html#technical-requirements
 [5]: https://symfony.com/download
-[6]: https://symfony.com/doc/current/cookbook/configuration/web_server_configuration.html
+[6]: https://dummyjson.com/

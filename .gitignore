@@ -28,7 +28,7 @@
 /public/assets/
 ###< symfonycasts/sass-bundle ###
 
-# Gridview bundle assets, copied by bin/sync-gridview-assets (reproducible)
+# Legacy copy of the gridview Stimulus controllers (no longer used, safe to delete)
 /assets/vendor-gridview/
 # EasyAdmin shell CSS, copied by bin/sync-gridview-assets (reproducible)
 /assets/vendor-easyadmin/

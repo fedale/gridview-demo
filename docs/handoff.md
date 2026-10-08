@@ -1,12 +1,15 @@
-# Handoff — continuare il lavoro su un altro PC
+# Handoff — continuing the work on another PC
 
-Replica dei controller EasyAdmin di **gridview-demo** con **fedale/gridview-bundle**,
-affiancando i due backend per confronto. Si procede un controller alla volta.
+Replicating the EasyAdmin controllers of **gridview-demo** with **fedale/gridview-bundle**,
+keeping the two backends side by side for comparison, and using the demo to exercise
+new bundle features (JSON data providers, per-view columns, export, grouping, ...).
 
-## 1. Layout dei repo (IMPORTANTE)
+Last updated: 2026-10-08.
 
-gridview-demo usa il bundle via **path repository relativo** (`../gridview-bundle`),
-quindi i due repo devono stare **affiancati nella stessa cartella padre**:
+## 1. Repo layout (IMPORTANT)
+
+gridview-demo uses the bundle through a **relative path repository** (`../gridview-bundle`),
+so the two repos must sit **side by side in the same parent directory**:
 
 ```
 <parent>/
@@ -20,156 +23,120 @@ git clone git@github.com:fedale/gridview-bundle.git
 git clone git@github.com:fedale/gridview-demo.git
 ```
 
-Entrambi i branch `main` sono aggiornati (esistono anche i branch
-`symfony8-compat` e `gridview-integration`, già mergiati).
+Use the SSH remotes: HTTPS push needs a personal access token.
 
-## 2. Setup di gridview-demo
+## 2. gridview-demo setup
 
-Requisiti: **PHP 8.4** con estensione **pdo_sqlite** (DB = `var/data.db`),
-Composer. Niente Node (asset gestiti senza npm).
-Se manca sqlite: `sudo apt install php8.4-sqlite3` e riavvia il server.
+Requirements: **PHP 8.4** with the **pdo_sqlite** extension, Composer. No Node
+(assets are managed by AssetMapper + SassBundle).
+If sqlite is missing: `sudo apt install php8.4-sqlite3` and restart the server.
 
 ```bash
 cd gridview-demo
-composer install                       # symlinka il path-repo a ../gridview-bundle
-bin/sync-gridview-assets               # popola assets/vendor-gridview/ (gitignored)
-php bin/console importmap:install      # scarica i vendor JS pinnati (assets/vendor/, gitignored)
-php bin/console sass:build             # compila il CSS del bundle (scarica dart-sass al 1° run)
-php bin/console cache:clear
+composer install                                   # symlinks the path repo to ../gridview-bundle
+bin/sync-gridview-assets                           # copies the EasyAdmin shell CSS into assets/vendor-easyadmin/
+php bin/console importmap:install                  # downloads the pinned JS vendors into assets/vendor/
+php bin/console sass:build                         # compiles the grid SCSS (downloads dart-sass on the first run)
+php bin/console foundry:load-fixtures initial_state  # creates the SQLite schema and loads the demo data
 ```
 
-Cose **gitignored** che i comandi sopra rigenerano: `assets/vendor-gridview/`,
-`assets/vendor/`, l'output Sass in `var/`. Il DB SQLite `var/data.db` **è**
-committato (con i fixtures), quindi non serve ricrearlo. Se servisse:
-`php bin/console doctrine:schema:create` + caricamento fixtures.
+The SQLite DB (`var/data.db`) is **not** versioned anymore (commit `dc39d8c`):
+`foundry:load-fixtures` resets the schema from the Doctrine mapping and loads
+`App\Story\InitialStateStory`. A DB created this way has no migration metadata:
+to use `doctrine:migrations:migrate` on it later, first run
+`doctrine:migrations:sync-metadata-storage` and
+`doctrine:migrations:version --add --all`. The "Fixtures data" item in the sidebar
+(`/{_locale}/admin/regenerate-fixtures`) does the same from the browser.
 
-Avvio:
+The token-gated JSON grids need `INTERNAL_API_BASE_URL`, `INTERNAL_API_TOKEN`,
+`REFERENCE_API_BASE_URL` and `REFERENCE_API_TOKEN` in `.env.local`.
+
+Start:
 ```bash
-symfony serve            # oppure: php -S 127.0.0.1:8000 -t public public/index.php
+symfony serve            # or: php -S 127.0.0.1:8000 -t public public/index.php
 ```
 
-- Griglia gridview:  `/gridview/tag`
-- Admin EasyAdmin (confronto): `/{_locale}/admin`
+- Gridview backend: `/gridview` (dashboard) and `/gridview/<entity>`
+- EasyAdmin admin (comparison): `/{_locale}/admin`
 
-## 3. Stato attuale (cosa è fatto)
+Tests: `./vendor/bin/phpunit` (`SmokeTest`, `GridviewGroupingLazyTest`,
+`InternalProductApiTest`). Don't use `simple-phpunit`: it installs its own
+PHPUnit 9.5, which clashes with the 9.6 in `vendor/`.
 
-- **gridview-bundle portato a Symfony 7/8 + Doctrine 3** (retro-compatibile 6.4),
-  180 test verdi su PHP 8.4. Dettagli nel commit `symfony8-compat`.
-- **Bundle integrato** in gridview-demo (bundles.php, gridview.yaml, path-repo).
-- **TagController** (`src/Controller/Gridview/TagController.php`) replica
-  `Admin/TagCrudController`: list + filtro + sort + CRUD. `TagRepository::search()`
-  alimenta filtri/sort/bulk.
-- **Pipeline asset (AssetMapper, no Node)**: SassBundle compila lo SCSS del bundle;
-  i controller Stimulus sono copiati in `assets/vendor-gridview/` e registrati
-  (import **relativi**) in `assets/bootstrap.js`; entrypoint `gridview-page` in
-  `importmap.php`.
-- **flatpickr rimandato**: stub SCSS + `docs/flatpickr-assetmapper-plan.md`; il
-  controller `gridview-date-filter` NON è registrato (serve solo ai filtri data).
+## 3. Current state (what is done)
 
-Verificato via HTTP che pagina e tutti gli asset (CSS + 18 moduli JS) rispondono.
-- **Click-test di Tag: FATTO** (Playwright headless + Chrome). Verdi: caricamento
-  pagina + tabella, modale NEW (form), modale EDIT (precompilata), filtro live
-  (AJAX), inline-edit. Nessun errore JS; in console solo `GET /favicon.ico 404`
-  (innocuo). **Selezione/bulk non testabile**: `TagController::buildColumns()` non
-  aggiunge la colonna checkbox, quindi la griglia non espone selezione. Per
-  abilitarla basta `['type' => 'checkbox']` nelle colonne (il bundle ha
-  `CheckboxColumn` + `Gridview::hasCheckboxColumn()`). Lasciata fuori di proposito
-  (vedi docblock del controller), da riattivare per feedback.
+### Bundle integration
+- **Bundle config** in `config/packages/gridview.yaml`: `bootstrap5` theme, client-side
+  i18n (EN/ES/FR/IT, reusing the app's `messages` catalogs), global defaults
+  (Turbo, `bootstrap_5_layout.html.twig` form theme, page sizes 10/20/50/100),
+  `JsonDataProvider` for the three JSON grids.
+- **Stimulus controllers**: auto-discovered by AssetMapper from
+  `vendor/fedale/gridview-bundle/assets` and enabled in `assets/controllers.json`.
+  No manual copy or registration anymore. Only `date-filter` is disabled (see §4).
+- **EA-style shell** (`templates/gridview/layout.html.twig`): EasyAdmin
+  `.wrapper / .sidebar-wrapper / .main-content` layout, reusing the EA shell CSS
+  (`color-palette`, `variables-theme`, `base`, `menu`, `badges`) copied by
+  `bin/sync-gridview-assets`; Font Awesome via CDN; mobile hamburger
+  (`assets/sidebar-toggle.js`).
+- **Sidebar**: `src/Twig/GridviewMenuExtension.php` (`gridview_menu()`) replicates
+  the EA menu. Entity items link to the router-generated `gridview_<slug>_index`
+  route and are disabled until that route exists.
+- **content-top**: search wired to the grid global search + settings dropdown
+  (Light/Dark/Auto theme, language). Theme handled by `assets/theme-switcher.js`
+  (`ea-dark-scheme`/`ea-light-scheme` on `<body>` + `data-bs-theme`), no flash.
+- **Locale**: gridview routes have no `{_locale}`; `src/EventListener/GridviewLocaleListener.php`
+  handles `?_locale=xx` and persists it in the session for `/gridview` paths.
+- **App default grid template**: one shared template, no per-controller overrides.
 
-Prerequisito ambiente emerso: serve l'estensione PHP **pdo_sqlite** (il DB è
-`var/data.db`); su Debian/Ubuntu `sudo apt install php8.4-sqlite3` e riavviare
-il server (`symfony server:stop && symfony serve -d`).
+### Grids (`src/Controller/Gridview/`)
 
-## 4. Prossimi passi (in ordine)
+| Grid | Route | Highlights |
+| --- | --- | --- |
+| Dashboard | `/gridview` | landing page |
+| Tag | `/gridview/tag` | reference pattern; UUID key, popularity bar column, checkbox selection + bulk delete, custom filter modal, "View posts" action, row actions leave the grid frame; detail view in `TagDetailController` |
+| Category | `/gridview/category` | EA parity, position filter, filter-clear chips, list/card renderers with view switcher and custom item templates |
+| Post | `/gridview/posts` | fetch-joined author/category, author and category filters, per-view columns, form/detail-only fields, EA-like form (fieldsets, Bootstrap 5 theme), new post saveable |
+| Post translation | `/gridview/post-translations` | composite primary key (`post_id`, `locale`) |
+| User | `/gridview/users` | lazy grouping: expands each user's posts |
+| Comment | `/gridview/comment` | date filter (plain input until flatpickr lands), datetime control |
+| Subscriber | `/gridview/subscribers` | virtual column |
+| DummyJSON user | `/gridview/dummy-json-user` | read-only, public dummyjson.com API via `JsonDataProvider` |
+| Internal product | `/gridview/internal-product` | read-only, the app's own token-gated API (`/internal-api/products`) |
+| Reference | `/gridview/reference` | read-only, remote token-gated reference API (only the "column" category for now) |
 
-1. ~~**Click-test di Tag in browser**~~ — FATTO (vedi §3). Resta solo, se serve,
-   abilitare la colonna checkbox per provare selezione/bulk.
-2. **Replica controller-per-controller** (semplice → complesso), fermandosi per
-   feedback dopo ciascuno:
-   Category → Series → User → Subscriber → Comment → FormFieldReference → Post.
-   Pattern di riferimento: `TagController` + `TagRepository::search()`.
-   Per ogni entità con pagina detail, aggiungere un `AbstractDetailController`
-   accoppiato (stesso `id`, stesse colonne) per abilitare il token `{view}`.
-3. **flatpickr** (`docs/flatpickr-assetmapper-plan.md`) quando si arriva a un
-   controller con filtri data (Subscriber/Comment/Post).
-4. **i18n/look**: le label escono come chiavi grezze (`tag.name`) perché il
-   dominio di traduzione non è caricato server-side; da rifinire.
+Export (`gridview-export` controller) is enabled.
 
-## 5. Note / trabocchetti
+## 4. Next steps / open items
 
-- **Dopo ogni update di gridview-bundle**, rilanciare `bin/sync-gridview-assets`
-  (i controller Stimulus sono una copia) e `sass:build`.
-- **Perché la copia in `assets/vendor-gridview/`**: AssetMapper aggiunge all'import-map
-  le dipendenze solo degli import **relativi**; con i controller importati come
-  bare-specifier dal symlink in vendor, i loro helper interni (`../i18n.js`)
-  davano 404. Tenendoli sotto la root asset dell'app e importandoli relativamente
-  AssetMapper li risolve.
-- **repara-demo condivide lo stesso bundle via symlink** ma gira su Symfony 6.4:
-  le modifiche sono retro-compatibili ma conviene fare uno smoke-test di
-  repara-demo, dato che il sorgente del bundle è cambiato.
-- Le rotte gridview **non** usano `{_locale}` di proposito: il bundle genera URL
-  per le azioni senza quel parametro.
+1. **Remaining EasyAdmin controllers**: `Series` and `FormFieldReference` have no
+   gridview replica yet. Follow `TagController` / `TagRepository::search()`; their
+   sidebar items enable themselves as soon as the `gridview_<slug>_index` route exists.
+   For entities with a detail page, add a paired `AbstractDetailController`
+   (same `id`, same columns) to enable the `{view}` token.
+2. **flatpickr** (`docs/flatpickr-assetmapper-plan.md`): still deferred. The
+   `date-filter` controller is disabled in `assets/controllers.json` and the
+   flatpickr CSS is an empty stub in `assets/vendor-sass/`, so date filters
+   (e.g. Comment) render as a plain input.
+3. **Reference grid**: only the "column" category is rendered; the other categories
+   of the Angular screen are still to do.
+4. **Sidebar polish** (open): the .45 opacity of disabled items is not very visible
+   in light mode; menu labels are fixed English strings in the extension and don't go
+   through the translation domain.
 
-## 6. Layout EA-style per le pagine gridview (IN CORSO — riprendere da qui)
+## 5. Notes / pitfalls
 
-Obiettivo: shell esterna delle pagine gridview **identica a EasyAdmin**
-(`.wrapper` > `.sidebar-wrapper` + `.main-content`), riusando il CSS reale di EA.
-
-### Fatto (funziona, verificato)
-- **Shell + tema EA**: `templates/gridview/layout.html.twig` (nuovo) con
-  `.wrapper / .sidebar-wrapper / .main-content` (niente `.responsive-header`).
-  `templates/gridview/index.html.twig` ora estende il layout.
-- **CSS shell EA riusato**: i 4 file `color-palette/variables-theme/base/menu.css`
-  sono copiati da EA in `assets/vendor-easyadmin/` (gitignored) da
-  `bin/sync-gridview-assets`, e importati in `assets/gridview-page.js` (prima di
-  `grid.scss`, così la griglia vince). I file componente EA (buttons/forms/
-  datagrids) NON sono caricati per non confliggere con la griglia.
-- **Sidebar = replica del menu EA reale**: costruita da `src/Twig/GridviewMenuExtension.php`
-  (`gridview_menu()`), con sezioni (Content/Community/Administration/Resources/Links),
-  icone Font Awesome, badge (Blog Posts/Comments/Subscribers, conteggi dai repo).
-  Le voci entità linkano a `/gridview/<entity>` (senza `{_locale}`) e si
-  **auto-abilitano** quando esiste la rotta `gridview_<slug>_index`; finché no,
-  restano grigie/disabilitate. Dashboard/Fixtures → admin reale; Docs/Demo/Sponsor → URL.
-- **Font Awesome**: via CDN nel `<head>` del layout (scelta utente).
-- **content-top**: barra con **search** (collegata alla global search della griglia,
-  param `myform[_q]`; box global search in-grid nascosto via CSS) + dropdown
-  **impostazioni** (tema Light/Dark/Auto + lingua EN/ES/FR) che usa il controller
-  `gridview-dropdown` (no Bootstrap JS); stile del menu in `assets/styles/gridview-shell.css`.
-- **Tema**: `assets/theme-switcher.js` applica light/dark/auto su `data-bs-theme`
-  (html+body) e `data-ea-color-scheme`/`data-gv-theme` (body), persistito in
-  localStorage; snippet inline nel `<head>` per evitare il flash.
-- **Search Tag**: abilitata `globalSearch: ['name']` in `TagController` per
-  alimentare la search della content-top.
-- **Locale**: `src/EventListener/GridviewLocaleListener.php` (nuovo) gestisce
-  `?_locale=xx` via sessione SOLO per i path `/gridview` (le rotte non hanno `{_locale}`).
-- **Verifica**: click-test Playwright **6/7** come prima (l'unico FAIL è la
-  selezione/bulk non configurata su Tag, invariato); search 18→8; dropdown e
-  toggle tema OK. Screenshot nello scratchpad della sessione.
-
-### DA FARE / da rifinire (riprendere da qui)
-1. ~~**Dark mode della griglia**~~ — FATTO. La causa era il trigger sbagliato:
-   EA attiva il dark con la **classe `.ea-dark-scheme` sul `<body>`** (non
-   `data-ea-color-scheme`), e quella stessa classe attiva anche il dark della
-   griglia. `theme-switcher.js` ora fa toggle di `ea-dark-scheme`/`ea-light-scheme`
-   (+ `data-bs-theme` per Bootstrap/grid). Verificato: shell + tabella tutto dark
-   coerente (body bg #0a0a0a, testo chiaro leggibile).
-2. ~~**Locale switch**~~ — FATTO e verificato: `?_locale=es|fr` cambia lingua e il
-   `GridviewLocaleListener` la **persiste in sessione** (un reload semplice di
-   `/gridview/tag` resta in `es`).
-3. **Voci disabilitate**: l'opacità .45 è poco evidente in light; valutare di
-   marcarle meglio. (aperto)
-4. Le label entità nel menu sono testo inglese fisso nell'extension (coerente con
-   docs in inglese); non passano dal dominio di traduzione. (aperto)
-5. **Prossimo passo principale**: replicare `CategoryController` (poi Series →
-   User → ...). Appena esiste la rotta `gridview_category_index`, la voce in
-   sidebar si **auto-abilita** (nessun edit al menu).
-
-### Modifiche di questa sessione (tutte non committate)
-- Nuovi: `templates/gridview/layout.html.twig`, `src/Twig/GridviewMenuExtension.php`,
-  `src/EventListener/GridviewLocaleListener.php`, `assets/theme-switcher.js`,
-  `assets/styles/gridview-shell.css`.
-- Modificati: `templates/gridview/index.html.twig`, `assets/gridview-page.js`,
-  `bin/sync-gridview-assets` (+copia EA shell), `.gitignore` (+`/assets/vendor-easyadmin/`),
-  `src/Controller/Gridview/TagController.php` (+globalSearch).
-- Rigenerato (gitignored): `assets/vendor-easyadmin/` (4 file). Su un nuovo PC
-  basta `bin/sync-gridview-assets`.
+- **After each gridview-bundle update**, run `bin/sync-gridview-assets` and
+  `php bin/console sass:build` again, then clear the cache.
+- **Migrations**: `migrations/` is in sync with the mapping (`Version20261008180453`
+  adds `post_translation` and the Tag UUID key; it recreates `tag`/`post_tag` empty,
+  so reload the fixtures after it). `doctrine:schema:validate` still reports
+  `post_translation` and `post_tag` out of sync: it's a DBAL/SQLite false positive
+  on composite-key tables (`ON UPDATE NO ACTION`) that persists after
+  `schema:update`; ignore it.
+- **repara-demo shares the same bundle via symlink** but runs on Symfony 6.4:
+  bundle changes must stay backward compatible; smoke-test repara-demo after
+  changing the bundle source.
+- The gridview routes do **not** use `{_locale}` on purpose: the bundle generates URLs
+  for the actions without that parameter.
+- `assets/vendor-gridview/` (gitignored) is a leftover of the old manual copy of the
+  Stimulus controllers; if it exists locally, delete it, then drop its `.gitignore` entry.
