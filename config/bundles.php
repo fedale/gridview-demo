@@ -18,4 +18,5 @@ return [
     Zenstruck\Foundry\ZenstruckFoundryBundle::class => ['dev' => true, 'test' => true],
     Fedale\GridviewBundle\FedaleGridviewBundle::class => ['all' => true],
     Symfonycasts\SassBundle\SymfonycastsSassBundle::class => ['all' => true],
+    Fedale\SettingBundle\FedaleSettingBundle::class => ['all' => true],
 ];

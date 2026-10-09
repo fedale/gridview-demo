@@ -1,0 +1,5 @@
+# Runtime settings stored in the database (fedale/setting-bundle). Used by the
+# gridview UI settings modal through App\Gridview\SettingBundleUiSettingsStore.
+# Cache defaults apply (cache.app, invalidated on every set()).
+fedale_setting:
+    provider: doctrine

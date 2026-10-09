@@ -107,7 +107,12 @@ gridview_menu() Twig function; entity links point to /gridview/<entity>
                                 <aside class="content-top ea-search-enabled">
                                     {# Upper bar: hamburger + centered brand title + user icon + settings gear,
                                     sitting on the --gv-responsive-bg background (see gridview-shell.css). #}
-                                    <div class="gv-content-top-bar">
+                                    {# The bar also hosts the UI settings modal: the gear's "Settings"
+                                    item and the modal must share the gridview-ui-settings controller.
+                                    `grid` preselects the current page's grid scope (empty = global). #}
+                                    <div class="gv-content-top-bar" data-controller="gridview-ui-settings"
+                                        data-gridview-ui-settings-url-value="{{ path('fedale_gridview_ui_settings') }}"
+                                        data-gridview-ui-settings-grid-value="{{ gridview.id|default('') }}">
                                         {# Mobile-only hamburger: shown below 992px (see gridview-shell.css),
                                         toggles the off-screen sidebar via assets/sidebar-toggle.js. #}
                                         <button class="gv-sidebar-toggle" type="button" data-gv-sidebar-toggle
@@ -131,6 +136,12 @@ gridview_menu() Twig function; entity links point to /gridview/<entity>
                                                 <i class="fas fa-gear"></i>
                                             </button>
                                             <ul class="gv-dropdown-menu">
+                                                <li><button type="button" class="gv-dropdown-item"
+                                                        data-action="gridview-ui-settings#open"><i
+                                                            class="fas fa-sliders fa-fw"></i> {{ 'ui_settings.menu'|trans({}, 'GridviewBundle') }}</button></li>
+                                                <li>
+                                                    <hr>
+                                                </li>
                                                 <li class="gv-dropdown-header">Language</li>
                                                 {% for loc in ['en', 'es', 'fr', 'it'] %}
                                                 <li><a class="gv-dropdown-item{{ app.request.locale == loc ? ' is-active' : '' }}"
@@ -152,6 +163,8 @@ gridview_menu() Twig function; entity links point to /gridview/<entity>
                                                 </li>
                                             </ul>
                                         </div>
+
+                                        {% include '@FedaleGridview/ui_settings/_modal.html.twig' %}
                                     </div>
 
                                     {# Lower row: just the search. Pages without a grid (e.g. the dashboard)

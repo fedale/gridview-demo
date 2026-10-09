@@ -1514,6 +1514,9 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  * @psalm-type FedaleGridviewConfig = array{
  *     template?: scalar|Param|null, // Default: "fedale"
  *     theme?: scalar|Param|null, // Default: "default"
+ *     ui_settings?: array{ // Runtime UI settings edited by the end user (global + per grid).
+ *         store?: scalar|Param|null, // Default: null
+ *     },
  *     themes?: array<string, array{ // Default: []
  *         extends?: scalar|Param|null, // Default: null
  *         classes?: list<scalar|Param|null>,
@@ -1694,6 +1697,18 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     },
  *     embed_sourcemap?: bool|Param|null, // Deprecated: Option "embed_sourcemap" at "symfonycasts_sass.embed_sourcemap" is deprecated. Use "sass_options.embed_source_map" instead". // Default: null
  * }
+ * @psalm-type FedaleSettingConfig = array{
+ *     cache?: array{
+ *         enabled?: bool|Param, // Default: true
+ *         pool?: scalar|Param|null, // Default: "cache.app"
+ *         ttl?: int|Param, // Default: null
+ *     },
+ *     provider?: scalar|Param|null, // Default: "doctrine"
+ *     validation?: array{
+ *         enabled?: bool|Param, // Default: false
+ *         constraints_provider?: scalar|Param|null, // Default: null
+ *     },
+ * }
  * @psalm-type ConfigType = array{
  *     imports?: ImportsConfig,
  *     parameters?: ParametersConfig,
@@ -1710,6 +1725,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     twig_component?: TwigComponentConfig,
  *     fedale_gridview?: FedaleGridviewConfig,
  *     symfonycasts_sass?: SymfonycastsSassConfig,
+ *     fedale_setting?: FedaleSettingConfig,
  *     "when@dev"?: array{
  *         imports?: ImportsConfig,
  *         parameters?: ParametersConfig,
@@ -1730,6 +1746,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         zenstruck_foundry?: ZenstruckFoundryConfig,
  *         fedale_gridview?: FedaleGridviewConfig,
  *         symfonycasts_sass?: SymfonycastsSassConfig,
+ *         fedale_setting?: FedaleSettingConfig,
  *     },
  *     "when@prod"?: array{
  *         imports?: ImportsConfig,
@@ -1747,6 +1764,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         twig_component?: TwigComponentConfig,
  *         fedale_gridview?: FedaleGridviewConfig,
  *         symfonycasts_sass?: SymfonycastsSassConfig,
+ *         fedale_setting?: FedaleSettingConfig,
  *     },
  *     "when@test"?: array{
  *         imports?: ImportsConfig,
@@ -1766,6 +1784,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         zenstruck_foundry?: ZenstruckFoundryConfig,
  *         fedale_gridview?: FedaleGridviewConfig,
  *         symfonycasts_sass?: SymfonycastsSassConfig,
+ *         fedale_setting?: FedaleSettingConfig,
  *     },
  *     ...<string, ExtensionType|array{ // extra keys must follow the when@%env% pattern or match an extension alias
  *         imports?: ImportsConfig,

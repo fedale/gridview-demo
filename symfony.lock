@@ -47,6 +47,9 @@
     "fedale/gridview-bundle": {
         "version": "1.0.x-dev"
     },
+    "fedale/setting-bundle": {
+        "version": "1.0.x-dev"
+    },
     "phpunit/phpunit": {
         "version": "9.6",
         "recipe": {

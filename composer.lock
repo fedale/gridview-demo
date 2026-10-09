@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f17e211c061928900a2a655484e6a851",
+    "content-hash": "9ad246958900db1a065000e339632af6",
     "packages": [
         {
             "name": "composer/semver",
@@ -1368,29 +1368,40 @@
             "dist": {
                 "type": "path",
                 "url": "../gridview-bundle",
-                "reference": "7844f347f3fb275c12b9bb5d116403066c642b1b"
+                "reference": "6a7d5d63bb0f356f109cbd15e1546e0a761bdd34"
             },
             "require": {
-                "php": ">=8.1",
-                "symfony/framework-bundle": "^6.4 || ^7.0 || ^8.0"
-            },
-            "require-dev": {
+                "doctrine/doctrine-bundle": "^2.7 || ^3.0",
                 "doctrine/orm": "^2.12 || ^3.0",
-                "phpunit/phpunit": "^9.6",
+                "php": ">=8.1",
                 "symfony/form": "^6.4 || ^7.0 || ^8.0",
+                "symfony/framework-bundle": "^6.4 || ^7.0 || ^8.0",
                 "symfony/property-access": "^6.4 || ^7.0 || ^8.0",
                 "symfony/serializer": "^6.4 || ^7.0 || ^8.0",
                 "symfony/translation": "^6.4 || ^7.0 || ^8.0",
                 "symfony/twig-bundle": "^6.4 || ^7.0 || ^8.0",
                 "twig/twig": "^3.0"
             },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.0",
+                "phpstan/phpstan": "^2.0",
+                "phpunit/phpunit": "^9.6",
+                "symfony/console": "^6.4 || ^7.0 || ^8.0",
+                "symfony/http-client": "^6.4 || ^7.0 || ^8.0",
+                "symfony/intl": "^8.1",
+                "symfony/maker-bundle": "^1.50"
+            },
             "suggest": {
+                "ext-intl": "Enables full ICU-based locale-aware number/date/currency formatting; a reduced fallback is used without it.",
+                "symfony/http-client": "Enables the built-in JsonDataProvider for grids backed by a JSON-over-HTTP endpoint instead of Doctrine",
+                "symfony/intl": "Enables localized names for the country/language/locale/currency column types; the bare ISO code is shown without it.",
+                "symfony/maker-bundle": "Enables the make:gridview:crud scaffolding command. Install it in your app with: composer require --dev symfony/maker-bundle",
                 "symfony/mercure-bundle": "Enables real-time grid updates (signal + auto-refresh) over Mercure"
             },
             "type": "symfony-bundle",
             "extra": {
                 "branch-alias": {
-                    "dev-main": "1.0.x-dev"
+                    "dev-main": "1.2.x-dev"
                 }
             },
             "autoload": {
@@ -1403,6 +1414,20 @@
                     "Fedale\\GridviewBundle\\Tests\\": "tests/"
                 }
             },
+            "scripts": {
+                "phpstan": [
+                    "phpstan analyse"
+                ],
+                "test": [
+                    "phpunit"
+                ],
+                "cs": [
+                    "php-cs-fixer fix --dry-run --diff"
+                ],
+                "cs-fix": [
+                    "php-cs-fixer fix"
+                ]
+            },
             "license": [
                 "MIT"
             ],
@@ -1412,13 +1437,77 @@
                     "email": "zitter@gmail.com"
                 }
             ],
-            "description": "Gridview in Yii2 style inside your Symfony projects",
+            "description": "A reusable, application-grade data-grid component for Symfony.",
             "keywords": [
                 "bundle",
                 "crud",
                 "datagrid",
                 "grid",
                 "gridview",
+                "stimulus",
+                "symfony",
+                "symfony-ux"
+            ],
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
+        },
+        {
+            "name": "fedale/setting-bundle",
+            "version": "1.0.x-dev",
+            "dist": {
+                "type": "path",
+                "url": "../setting-bundle",
+                "reference": "337208646f008cf075918d0189caf03c91e88bc5"
+            },
+            "require": {
+                "php": "^8.2",
+                "psr/cache": "^3.0",
+                "symfony/config": "^6.4 || ^7.0 || ^8.0",
+                "symfony/dependency-injection": "^6.4 || ^7.0 || ^8.0",
+                "symfony/http-kernel": "^6.4 || ^7.0 || ^8.0"
+            },
+            "require-dev": {
+                "doctrine/doctrine-bundle": "^2.8 || ^3.0",
+                "doctrine/orm": "^2.14 || ^3.0",
+                "phpunit/phpunit": "^11.0",
+                "symfony/cache": "^6.4 || ^7.0 || ^8.0",
+                "symfony/validator": "^6.4 || ^7.0 || ^8.0",
+                "twig/twig": "^3.0"
+            },
+            "suggest": {
+                "doctrine/doctrine-bundle": "Necessario quando 'provider: doctrine'",
+                "doctrine/orm": "Necessario quando 'provider: doctrine' (storage di default dei settings)",
+                "symfony/validator": "Abilita la validazione opt-in dei valori per-key (validation.enabled)",
+                "twig/twig": "Abilita la funzione Twig setting() per leggere i settings nei template"
+            },
+            "type": "symfony-bundle",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Fedale\\SettingBundle\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Fedale\\SettingBundle\\Tests\\": "tests/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Symfony bundle for runtime, multi-tenant application settings stored in the database",
+            "keywords": [
+                "bundle",
+                "configuration",
+                "multi-tenant",
+                "preferences",
+                "settings",
                 "symfony"
             ],
             "transport-options": {
@@ -10749,14 +10838,15 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "fedale/gridview-bundle": 20
+        "fedale/gridview-bundle": 20,
+        "fedale/setting-bundle": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=8.4",
         "ext-ctype": "*",
-        "ext-iconv": "*"
+        "ext-iconv": "*",
+        "php": ">=8.4"
     },
     "platform-dev": {},
     "plugin-api-version": "2.9.0"
