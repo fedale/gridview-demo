@@ -1,6 +1,6 @@
 // Mobile sidebar toggle for the gridview shell. On narrow viewports the EA
 // sidebar is positioned off-screen; EA reveals it by adding the
-// `ea-mobile-sidebar-visible` class on <body> (see vendor-easyadmin/base.css).
+// `ea-mobile-sidebar-visible` class on <body> (see styles/ea/base.css).
 // We drive that class from the hamburger button in .content-top, mirroring the
 // delegated-listener pattern of theme-switcher.js (no Stimulus controller).
 

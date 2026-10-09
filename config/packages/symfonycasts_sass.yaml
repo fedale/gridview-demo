@@ -11,4 +11,4 @@ symfonycasts_sass:
             - '%kernel.project_dir%/vendor/fedale/gridview-bundle/assets/styles'
             # Resolve the deferred `@use 'flatpickr/dist/flatpickr'` stub
             # (see docs/flatpickr-assetmapper-plan.md).
-            - '%kernel.project_dir%/assets/vendor-sass'
+            - '%kernel.project_dir%/assets/styles/stubs'

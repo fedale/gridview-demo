@@ -16,7 +16,7 @@ of the asset integration can proceed with flatpickr **stubbed out** and this han
 
 ## Interim state (what the main work leaves in place)
 
-To unblock Sass compilation now, a **load path** points at `assets/vendor-sass/` containing an
+To unblock Sass compilation now, a **load path** points at `assets/styles/stubs/` containing an
 **empty** `flatpickr/dist/flatpickr.css`, so `@use 'flatpickr/dist/flatpickr'` resolves to a
 no-op. Result: everything compiles; the date picker is simply unstyled and the
 `gridview-date-filter` controller is **not registered** (date filters degrade to a plain
@@ -31,13 +31,13 @@ text/date input). This plan replaces the stub with the real library.
    so the `Italian` import resolves.
 3. **CSS for Sass**: AssetMapper's importmap covers JS only — Dart Sass still needs the `.css`
    on a load path. Point the SassBundle `load_paths` at the downloaded
-   `assets/vendor/flatpickr/dist/` (or copy `flatpickr.css` into `assets/vendor-sass/flatpickr/dist/`),
+   `assets/vendor/flatpickr/dist/` (or copy `flatpickr.css` into `assets/styles/stubs/flatpickr/dist/`),
    replacing the empty stub. Then `@use 'flatpickr/dist/flatpickr'` pulls the real CSS.
 4. Register the `gridview-date-filter` Stimulus controller (same mechanism as the other bundle
    controllers — see the main asset-integration work).
 
 ### B. Vendor the assets manually
-Copy `flatpickr.css`, `flatpickr.js` (ESM build) and `l10n/it.js` into `assets/vendor-sass/` /
+Copy `flatpickr.css`, `flatpickr.js` (ESM build) and `l10n/it.js` into `assets/styles/stubs/` /
 `assets/` and reference them by local path. More explicit, no importmap resolution, but the files
 become committed artifacts to update by hand on a flatpickr bump.
 

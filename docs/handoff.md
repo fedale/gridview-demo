@@ -34,7 +34,7 @@ If sqlite is missing: `sudo apt install php8.4-sqlite3` and restart the server.
 ```bash
 cd gridview-demo
 composer install                                   # symlinks the path repo to ../gridview-bundle
-bin/sync-gridview-assets                           # copies the EasyAdmin shell CSS into assets/vendor-easyadmin/
+bin/sync-gridview-assets                           # copies the EasyAdmin shell CSS into assets/styles/ea/
 php bin/console importmap:install                  # downloads the pinned JS vendors into assets/vendor/
 php bin/console sass:build                         # compiles the grid SCSS (downloads dart-sass on the first run)
 php bin/console foundry:load-fixtures initial_state  # creates the SQLite schema and loads the demo data
@@ -115,7 +115,7 @@ Export (`gridview-export` controller) is enabled.
    (same `id`, same columns) to enable the `{view}` token.
 2. **flatpickr** (`docs/flatpickr-assetmapper-plan.md`): still deferred. The
    `date-filter` controller is disabled in `assets/controllers.json` and the
-   flatpickr CSS is an empty stub in `assets/vendor-sass/`, so date filters
+   flatpickr CSS is an empty stub in `assets/styles/stubs/`, so date filters
    (e.g. Comment) render as a plain input.
 3. **Reference grid**: only the "column" category is rendered; the other categories
    of the Angular screen are still to do.
