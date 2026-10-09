@@ -138,5 +138,3 @@ Export (`gridview-export` controller) is enabled.
   changing the bundle source.
 - The gridview routes do **not** use `{_locale}` on purpose: the bundle generates URLs
   for the actions without that parameter.
-- `assets/vendor-gridview/` (gitignored) is a leftover of the old manual copy of the
-  Stimulus controllers; if it exists locally, delete it, then drop its `.gitignore` entry.
