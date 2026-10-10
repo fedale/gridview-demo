@@ -1,5 +1,8 @@
-# Runtime settings stored in the database (fedale/setting-bundle). Used by the
-# gridview UI settings modal through App\Gridview\SettingBundleUiSettingsStore.
-# Cache defaults apply (cache.app, invalidated on every set()).
+# Runtime settings stored in the database (fedale/setting-bundle). The gridview
+# UI settings modal is built on its scoped settings (namespace `gridview.ui`,
+# scopes `global` and `grid:<id>`), kept in the setting_scoped table.
+# Cache defaults apply (cache.app, invalidated on every write).
 fedale_setting:
     provider: doctrine
+    scoped:
+        store: doctrine

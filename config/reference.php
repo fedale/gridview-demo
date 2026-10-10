@@ -1514,9 +1514,6 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  * @psalm-type FedaleGridviewConfig = array{
  *     template?: scalar|Param|null, // Default: "fedale"
  *     theme?: scalar|Param|null, // Default: "default"
- *     ui_settings?: array{ // Runtime UI settings edited by the end user (global + per grid).
- *         store?: scalar|Param|null, // Default: null
- *     },
  *     themes?: array<string, array{ // Default: []
  *         extends?: scalar|Param|null, // Default: null
  *         classes?: list<scalar|Param|null>,
@@ -1707,6 +1704,9 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     validation?: array{
  *         enabled?: bool|Param, // Default: false
  *         constraints_provider?: scalar|Param|null, // Default: null
+ *     },
+ *     scoped?: array{
+ *         store?: scalar|Param|null, // Default: null
  *     },
  * }
  * @psalm-type ConfigType = array{
