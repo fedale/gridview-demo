@@ -1,8 +1,7 @@
 fedale_gridview:
     # End-user UI settings (gear menu → Settings): global defaults plus per-grid
-    # overrides, stored in the database via fedale/setting-bundle.
-    ui_settings:
-        store: App\Gridview\SettingBundleUiSettingsStore
+    # overrides. They need no key here: they are fedale/setting-bundle scoped
+    # settings, enabled by its `scoped.store` (see fedale_setting.yaml).
     # Framework theme: this demo is a Bootstrap 5 app (it loads Bootstrap CSS and
     # uses data-bs-theme), so the grid emits real Bootstrap classes for its leaf
     # elements (buttons) and follows Bootstrap's palette/dark mode via the preset.
